@@ -2,7 +2,7 @@
 
 **Measure twice, code once.**
 
-Conductor is a portable AI agent skill that enables **Context-Driven Development**. It works with Claude Code, OpenCode, Gemini CLI, and other AI coding agents, transforming them into proactive project managers that follow a strict protocol to specify, plan, and implement software features and bug fixes.
+Conductor is a portable AI agent skill that enables **Context-Driven Development**. It works with Codex CLI/Desktop (skills enabled), Claude Code, OpenCode, Gemini CLI, and other AI coding agents, transforming them into proactive project managers that follow a strict protocol to specify, plan, and implement software features and bug fixes.
 
 Instead of just writing code, Conductor ensures a consistent, high-quality lifecycle for every task: **Context -> Spec & Plan -> Implement**.
 
@@ -19,23 +19,27 @@ The philosophy behind Conductor is simple: control your code. By treating contex
 
 ## Installation
 
-### Claude Code / OpenCode / AI Agent Skill
+### Codex / Claude Code / OpenCode / AI Agent Skill
 
-Conductor is available as a portable **skill** that works with Claude CLI, OpenCode, and other AI coding agents that support the skills standard.
+Conductor is available as a portable **skill** that works with Codex CLI/Desktop (skills feature flag), Claude CLI, OpenCode, and other agents that support the skills standard.
 
 ```bash
 # Clone the repository
 git clone https://github.com/gemini-cli-extensions/conductor.git
 cd conductor
 
+# Enable skills in Codex (once per machine)
+codex --enable skills
+
 # Run the install script
 ./skill/scripts/install.sh
 ```
 
 The installer will ask where to install:
-1. **OpenCode global** (`~/.opencode/skill/conductor/`)
-2. **Claude CLI global** (`~/.claude/skills/conductor/`)
-3. **Both**
+1. **Codex CLI/Desktop** (`~/.codex/skills/conductor/`)
+2. **Claude CLI** (`~/.claude/skills/conductor/`)
+3. **OpenCode** (`~/.opencode/skill/conductor/`)
+4. **All of the above**
 
 The skill is installed with symlinks to this repository, so running `git pull` will automatically update the skill.
 
@@ -50,6 +54,10 @@ gemini extensions install https://github.com/gemini-cli-extensions/conductor --a
 ```
 
 The `--auto-update` flag is optional and will update to new versions as they are released.
+
+### Downloadable Codex Skill Zip (Alternative)
+
+Every GitHub release now includes `conductor-codex-skill.zip`. Download and unzip it into `~/.codex/skills/` (creating the `conductor/` folder). Then restart Codex CLI/Desktop.
 
 ## Usage
 
@@ -124,6 +132,7 @@ During implementation, you can also:
 
 ## Resources
 
+- Codex quickstart: see `CODEX-README.md` (repo root) and enable with `codex --enable skills` (CLI/Desktop)
 - [Gemini CLI extensions](https://geminicli.com/docs/extensions/): Documentation about using extensions in Gemini CLI
 - [GitHub issues](https://github.com/gemini-cli-extensions/conductor/issues): Report bugs or request features
 

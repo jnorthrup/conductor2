@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install Conductor skill for Claude CLI / OpenCode
+# Install Conductor skill for Codex / Claude CLI / OpenCode
 # Usage: ./install.sh
 #
 # This script creates a skill directory with symlinks to the Conductor repository,
@@ -31,21 +31,25 @@ echo "Conductor repository found at: $CONDUCTOR_ROOT"
 echo ""
 echo "Where do you want to install the skill?"
 echo ""
-echo "  1) OpenCode global    (~/.opencode/skill/conductor/)"
-echo "  2) Claude CLI global  (~/.claude/skills/conductor/)"
-echo "  3) Both"
+echo "  1) Codex CLI/Desktop (~/.codex/skills/conductor/)"
+echo "  2) Claude CLI        (~/.claude/skills/conductor/)"
+echo "  3) OpenCode          (~/.opencode/skill/conductor/)"
+echo "  4) All of the above"
 echo ""
-read -p "Choose [1/2/3]: " choice
+read -p "Choose [1/2/3/4]: " choice
 
 case "$choice" in
     1)
-        TARGETS=("$HOME/.opencode/skill/conductor")
+        TARGETS=("$HOME/.codex/skills/conductor")
         ;;
     2)
         TARGETS=("$HOME/.claude/skills/conductor")
         ;;
     3)
-        TARGETS=("$HOME/.opencode/skill/conductor" "$HOME/.claude/skills/conductor")
+        TARGETS=("$HOME/.opencode/skill/conductor")
+        ;;
+    4)
+        TARGETS=("$HOME/.codex/skills/conductor" "$HOME/.claude/skills/conductor" "$HOME/.opencode/skill/conductor")
         ;;
     *)
         echo "Invalid choice. Exiting."
@@ -86,4 +90,4 @@ echo ""
 echo "The skill references the Conductor repo at: $CONDUCTOR_ROOT"
 echo "Updates to the repo (git pull) will be reflected automatically."
 echo ""
-echo "Restart your AI CLI to load the skill."
+echo "Restart your AI CLI (or Codex Desktop) to load the skill."

@@ -1,6 +1,6 @@
 ---
 name: conductor
-description: Use when the user wants to setup a new project, create a new feature, write a spec, plan a feature, fix a bug with a plan, start a new track, check project status, implement next task, or revert changes. Also use when user mentions "conductor", "track", or "spec-driven development". If conductor is not yet configured in the project, start with setup.
+description: Use when the user wants to setup a new project, create a new feature, write a spec, plan a feature, fix a bug with a plan, start a new track, check project status, implement next task, or revert changes. Also use when user mentions "conductor", "track", or "spec-driven development". Supports Codex CLI/Desktop (skills enabled), Claude CLI, OpenCode, and Gemini CLI. If conductor is not yet configured in the project, start with setup.
 ---
 
 # Conductor

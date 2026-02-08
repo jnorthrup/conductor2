@@ -80,9 +80,9 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
                 3.  **Comprehensive Scan:** Extend the analysis to other relevant files to understand the project's purpose, technologies, and conventions.
 
             -   **2.1 File Size and Relevance Triage:**
-                1.  **Respect Ignore Files:** Before scanning any files, you MUST check for the existence of `.claudeignore`, `.geminiignore`, and `.gitignore` files. If any exist, you MUST use their combined patterns to exclude files and directories from your analysis. The patterns should take precedence in this order: `.claudeignore` > `.geminiignore` > `.gitignore`. This is the primary mechanism for avoiding token-heavy, irrelevant files like `node_modules`.
+                1.  **Respect Ignore Files:** Before scanning any files, you MUST check for the existence of `.claudeignore`, `.geminiignore`, `.codexignore`, and `.gitignore` files. If any exist, you MUST use their combined patterns to exclude files and directories from your analysis. The patterns should take precedence in this order: `.claudeignore` > `.geminiignore` > `.codexignore` > `.gitignore`. This is the primary mechanism for avoiding token-heavy, irrelevant files like `node_modules`.
                 2.  **Efficiently List Relevant Files:** To list the files for analysis, you MUST use a command that respects the ignore files. For example, you can use `git ls-files --exclude-standard -co | xargs -n 1 dirname | sort -u` which lists all relevant directories (tracked by Git, plus other non-ignored files) without listing every single file. If Git is not used, you must construct a `find` command that reads the ignore files and prunes the corresponding paths.
-                3.  **Fallback to Manual Ignores:** ONLY if none of `.claudeignore`, `.geminiignore`, or `.gitignore` exist, you should fall back to manually ignoring common directories. Example command: `ls -lR -I 'node_modules' -I '.m2' -I 'build' -I 'dist' -I 'bin' -I 'target' -I '.git' -I '.idea' -I '.vscode'`.
+                3.  **Fallback to Manual Ignores:** ONLY if none of `.claudeignore`, `.geminiignore`, `.codexignore`, or `.gitignore` exist, you should fall back to manually ignoring common directories. Example command: `ls -lR -I 'node_modules' -I '.m2' -I 'build' -I 'dist' -I 'bin' -I 'target' -I '.git' -I '.idea' -I '.vscode'`.
                 4.  **Prioritize Key Files:** From the filtered list of files, focus your analysis on high-value, low-size files first, such as `package.json`, `pom.xml`, `requirements.txt`, `go.mod`, and other configuration or manifest files.
                 5.  **Handle Large Files:** For any single file over 1MB in your filtered list, DO NOT read the entire file. Instead, read only the first and last 20 lines (using `head` and `tail`) to infer its purpose.
 
@@ -274,6 +274,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 1.  **Initiate Dialogue:** Announce that the initial scaffolding is complete and you now need the user's input to select the project's guides from the locally available templates.
 2.  **Select Code Style Guides:**
     -   List the available style guides by checking for templates in these locations (in order):
+        - `~/.codex/skills/conductor/templates/code_styleguides/`
         - `~/.claude/skills/conductor/templates/code_styleguides/`
         - `~/.opencode/skill/conductor/templates/code_styleguides/`
         - `~/.gemini/extensions/conductor/templates/code_styleguides/`
@@ -292,13 +293,14 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
             - Ask the user for a simple confirmation to proceed with options like:
                     A) Yes, I want to proceed with the suggested code style guides.
                     B) No, I want to add more code style guides.
-    -   **Action:** Construct and execute a command to create the directory and copy all selected files. First determine which templates directory exists (checking `~/.claude/skills/conductor/templates/`, `~/.opencode/skill/conductor/templates/`, or `~/.gemini/extensions/conductor/templates/`), then copy from that location. For example: `mkdir -p conductor/code_styleguides && cp $TEMPLATES_DIR/code_styleguides/python.md $TEMPLATES_DIR/code_styleguides/javascript.md conductor/code_styleguides/`
+    -   **Action:** Construct and execute a command to create the directory and copy all selected files. First determine which templates directory exists (checking `~/.codex/skills/conductor/templates/`, `~/.claude/skills/conductor/templates/`, `~/.opencode/skill/conductor/templates/`, or `~/.gemini/extensions/conductor/templates/`), then copy from that location. For example: `mkdir -p conductor/code_styleguides && cp $TEMPLATES_DIR/code_styleguides/python.md $TEMPLATES_DIR/code_styleguides/javascript.md conductor/code_styleguides/`
     -   **Commit State:** Upon successful completion of the copy command, you MUST immediately write to `conductor/setup_state.json` with the exact content:
         `{"last_successful_step": "2.4_code_styleguides"}`
 
 ### 2.5 Select Workflow (Interactive)
 1.  **Copy Initial Workflow:**
     -   Copy the workflow template to `conductor/workflow.md` from the first existing location:
+        - `~/.codex/skills/conductor/templates/workflow.md`
         - `~/.claude/skills/conductor/templates/workflow.md`
         - `~/.opencode/skill/conductor/templates/workflow.md`
         - `~/.gemini/extensions/conductor/templates/workflow.md`

@@ -2,7 +2,7 @@
 
 **Measure twice, code once.**
 
-Conductor is a skill for Claude Code that enables **Context-Driven Development**. It transforms Claude into a proactive project manager that follows a strict protocol to specify, plan, and implement software features and bug fixes.
+Conductor is a skill for Claude Code (and now Codex/OpenCode) that enables **Context-Driven Development**. It transforms your AI agent into a proactive project manager that follows a strict protocol to specify, plan, and implement software features and bug fixes.
 
 Instead of just writing code, Conductor ensures a consistent, high-quality lifecycle for every task: **Context -> Spec & Plan -> Implement**.
 
@@ -32,7 +32,7 @@ cd conductor
 
 The installer will create symlinks at `~/.claude/skills/conductor/`, so running `git pull` in this repository will automatically update the skill.
 
-**After installation, restart Claude Code.**
+**After installation, restart Claude Code (or Codex/Desktop if installed there).**
 
 ## How It Works
 
