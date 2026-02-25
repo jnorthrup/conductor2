@@ -1,0 +1,4 @@
+interface:
+  display_name: "Conductor"
+  short_description: "Spec-and-plan driven software delivery workflow"
+  default_prompt: "Use $conductor to set up project context, create a track, and execute the next planned task."

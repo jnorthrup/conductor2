@@ -1,0 +1,46 @@
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+name: release-please
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          target-branch: ${{ github.ref_name }}
+
+      - name: Checkout code
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@v4
+
+      - name: Create TAR archive
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          tar -czvf ../conductor-release.tar.gz \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='release-please-config.json' \
+            --exclude='.release-please-manifest.json' \
+            --exclude='.gitignore' \
+            --exclude='CONTRIBUTING.md' \
+            .
+          mv ../conductor-release.tar.gz .
+
+      - name: Upload archive to GitHub Release
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload \
+            ${{ steps.release.outputs.tag_name }} \
+            conductor-release.tar.gz

@@ -1,0 +1,11 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "package-name": "conductor",
+      "extra-files": [
+        "gemini-extension.json"
+      ]
+    }
+  }
+}

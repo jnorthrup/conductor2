@@ -1,0 +1,47 @@
+description = "Summarizes conductor track status and plan progress"
+prompt = """
+## SYSTEM DIRECTIVE
+You are an AI agent producing a practical Conductor status report. Be accurate, fast, and tolerant of partial/brownfield conductor setups.
+
+If a required file is missing, report exactly what is missing and what can still be summarized.
+
+---
+
+## 1. Discover Conductor State
+1. Check for `conductor/tracks.md`.
+   - If missing, stop and say conductor is not initialized (or tracks file is missing/corrupt).
+2. Read `conductor/tracks.md`.
+3. List directories under `conductor/tracks/` (if the folder exists).
+4. For each track directory, read `metadata.json` and `plan.md` if present.
+   - Be tolerant of empty/malformed/missing files and report them as warnings, not hard failures.
+
+---
+
+## 2. Parse and Compute Progress
+1. Parse track entries from `conductor/tracks.md` (support common formats, including `## [ ] Track:` and similar variants).
+2. For each track with a `plan.md`, count task markers:
+   - completed `[x]`
+   - in-progress `[~]`
+   - pending `[ ]`
+3. Detect likely current work:
+   - track marked `[~]`, or
+   - first non-complete track in `tracks.md`
+4. Detect inconsistencies:
+   - track marked `[x]` but pending tasks remain
+   - track marked `[~]` but no pending tasks remain
+   - track directory exists but is missing `plan.md` / `metadata.json`
+   - `metadata.json` status disagrees with `tracks.md`
+
+---
+
+## 3. Output Status Report
+Produce a concise report with:
+- Timestamp
+- Overall summary (`tracks completed / total`)
+- Track-by-track snapshot (status + task counts when available)
+- Current active track (best effort)
+- Next recommended action (usually `conductor implement` on the next incomplete track)
+- Warnings / inconsistencies (if any)
+
+Prefer concrete file references when calling out issues.
+"""
