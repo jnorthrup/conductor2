@@ -9,7 +9,7 @@ Productivity rules:
 - Do not pause for confirmation when the requested track is an exact match.
 - In a dirty repo, never revert unrelated changes.
 - Validate changes with focused checks/tests before marking tasks complete.
-- Prefer `100%` slices first, but treat `100%` as a per-track execution contract tied to a declared bounded corpus for this invocation.
+- Prefer `100%` TODOs first, not broad `100%` buckets. Treat `100%` as a per-track execution contract tied to a declared bounded corpus for this invocation.
 
 If a tool call fails, report the failure and either recover or stop with a concrete blocker.
 
@@ -44,8 +44,10 @@ If a tool call fails, report the failure and either recover or stop with a concr
    - `conductor/tech-stack.md`
    - `conductor/workflow.md` (if present)
 2. If `metadata.json` exists, read it and keep status/timestamp in sync as you progress.
-3. Identify the next actionable task in `plan.md` (first `[ ]` task; if subtasks exist, prefer the first pending subtask).
+3. Identify the next actionable TODO in `plan.md` (first `[ ]` task; if subtasks exist, prefer the first pending subtask).
 4. If the plan includes explicit `100% Slices (Zero-Discovery)` / `Decision Queue` / `Backlog` sections, prioritize the first pending task in `100% Slices (Zero-Discovery)`.
+   - Treat each `100%` item as a single TODO-sized unit that should complete in one invocation when feasible.
+   - Prefer TODOs whose context hints/adjacent nexus reuse the currently warm corpus.
 5. Before additional repo reads, declare a bounded corpus for this invocation in your working notes / summary:
    - `Task block` (the specific task(s) you intend to execute now)
    - `Bounded corpus` (files already read + files you plan to read for this block)
@@ -56,24 +58,24 @@ If a tool call fails, report the failure and either recover or stop with a concr
    - re-evaluate whether the active task remains `100%`
    - split/re-scope into a new task block if needed
 
-### 100% Slice Rule (Execution)
-A task is `100%` only within the declared task block and bounded corpus. It can be completed now without:
+### 100% TODO Rule (Execution)
+A TODO is `100%` only within the declared task block and bounded corpus. It can be completed now without:
 - reading files outside the declared bounded corpus,
 - investigating new subsystems/background code,
 - external docs/web lookups,
 - unresolved product/semantic decisions.
 
-If any of the above is required, the task is not `100%` for this invocation.
+If any of the above is required, the TODO is not `100%` for this invocation.
 
 ---
 
 ## 4. Implement (Action-Biased)
 1. Mark the selected track `[~]` in `conductor/tracks.md` (if not already).
-2. Mark the active task `[~]` in `plan.md` before starting implementation.
-3. Assess whether the task is already complete in the codebase:
+2. Mark the active TODO `[~]` in `plan.md` before starting implementation.
+3. Assess whether the TODO is already complete in the codebase:
    - If yes, gather file/test evidence, mark `[x]`, and continue to the next task.
-4. If incomplete, implement a real slice now:
-   - First check whether the selected task is `100%` under the rule above.
+4. If incomplete, implement a real TODO now:
+   - First check whether the selected TODO is `100%` under the rule above.
    - If it is not `100%`, do not expand discovery blindly. Instead:
      - note why it is not `100%` (`file-read`, `subsystem-read`, `external`, or `decision`)
      - split out at least one smaller `100%` subtask with its own bounded corpus when possible
@@ -83,9 +85,9 @@ If any of the above is required, the task is not `100%` for this invocation.
    - Make code changes.
    - Add/update tests when practical.
    - Run focused validation (targeted tests/checks/lint/build) relevant to the changed files.
-5. If validation passes, mark the task `[x]`.
+5. If validation passes, mark the TODO `[x]`.
 6. If blocked or partially complete:
-   - Keep task `[~]` only if work is genuinely in progress and resumable this session.
+   - Keep TODO `[~]` only if work is genuinely in progress and resumable this session.
    - Otherwise reset it to `[ ]` and add a brief blocker note under a `## Notes` / `## Validation Notes` section in `plan.md`.
 
 Guidance:
@@ -93,6 +95,7 @@ Guidance:
 - It is acceptable to complete multiple adjacent tasks if they are tightly coupled and validated together.
 - Prefer targeted commands (`rg`, focused tests) over broad scans.
 - If no pending task is `100%`, still deliver a cheaper next step by editing `plan.md` to create at least one explicit per-track `100%` subtask (with bounded corpus intent) or a concrete decision question.
+- If you identify a `100%` TODO, execute it now or explain why execution was impossible after a direct attempt. Re-partitioning without repo progress is not success.
 
 ---
 
@@ -110,7 +113,7 @@ Guidance:
 ## 6. Report Back
 Return a concise execution summary with:
 - Track selected (`track_id`)
-- Task(s) completed / in progress
+- TODO(s) completed / in progress
 - declared task block + bounded corpus
 - `100%` slice executed (or why none existed within that corpus)
 - entropy events (new file reads outside corpus) and any re-estimates, if they occurred

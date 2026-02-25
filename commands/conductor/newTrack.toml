@@ -79,14 +79,16 @@ Cold tracks often launch with few/no `100%` slices; optimize for context acquisi
    - Add a **Scope Capture / Planning Handoff** section near the top with:
      - `## Concrete Features` (explicit user-requested outcomes)
      - `## Author Context Hints` (user-supplied best guesses at adequate starting context)
-     - `## Track Temperature` (`cold`, `warm`, or `hot`) with one-line rationale
      - `## Candidate Workstreams` (high-level execution groupings)
      - `## First Maneuver (Line It Up / Knock It Down)` (the hard question to tackle first and suggested context to load first)
      - `## Unknowns / Decisions / Risks` (items requiring later repo reads or decisions)
      - `## Deferred / Out-of-Scope for This Track` (explicitly postponed)
    - Add a short note that detailed `100%` slices and bounded-corpus estimates are declared at execution start in `conductor implement`.
    - Avoid fake precision; optional uncertainty labels like `certainty=high|med|low` are fine.
-   - Default temperature heuristics:
+   - Add short context-ordering hints to TODOs when practical:
+     - `files:` primary files for the TODO
+     - `adjacent nexus:` nearby modules/callers/outputs likely to matter next
+   - Ephemeral temperature heuristics (do not store as track facts):
      - `cold`: little prior context, likely no immediate `100%` slices
      - `warm`: some known files/flows, bounded execution likely after limited reads
      - `hot`: incremental follow-on with strong context hints and likely immediate `100%` slices
@@ -121,7 +123,7 @@ Return:
 - any assumptions that should be reviewed
 - captured concrete features
 - captured author context hints
-- track temperature (`cold`/`warm`/`hot`) + rationale
+- optional ephemeral temperature assessment (`cold`/`warm`/`hot`) + rationale (do not persist as a track fact)
 - recommended first maneuver (what context to line up first and why)
 - unknowns / risks / deferred split (if broad track)
 - next command (`conductor implement`)
