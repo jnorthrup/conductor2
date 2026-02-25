@@ -9,7 +9,8 @@ Productivity rules:
 - Do not pause for confirmation when the requested track is an exact match.
 - In a dirty repo, never revert unrelated changes.
 - Validate changes with focused checks/tests before marking tasks complete.
-- Prefer `100%` TODOs first, not broad `100%` buckets. Treat `100%` as a per-track execution contract tied to a declared bounded corpus for this invocation.
+- Prefer `100%` TODOs first, not broad `100%` buckets. Treat `100%` as a per-track execution contract tied to a declared bounded context for this invocation.
+- `100%` is a first-choice execution heuristic, not the only constraint: sequencing, dependencies, validation value, and user intent still apply.
 
 If a tool call fails, report the failure and either recover or stop with a concrete blocker.
 
@@ -47,20 +48,20 @@ If a tool call fails, report the failure and either recover or stop with a concr
 3. Identify the next actionable TODO in `plan.md` (first `[ ]` task; if subtasks exist, prefer the first pending subtask).
 4. If the plan includes explicit `100% Slices (Zero-Discovery)` / `Decision Queue` / `Backlog` sections, prioritize the first pending task in `100% Slices (Zero-Discovery)`.
    - Treat each `100%` item as a single TODO-sized unit that should complete in one invocation when feasible.
-   - Prefer TODOs whose context hints/adjacent nexus reuse the currently warm corpus.
-5. Before additional repo reads, declare a bounded corpus for this invocation in your working notes / summary:
+   - Prefer TODOs whose context hints/adjacent nexus reuse the currently warm context.
+5. Before additional repo reads, declare a bounded context for this invocation in your working notes / summary:
    - `Task block` (the specific task(s) you intend to execute now)
-   - `Bounded corpus` (files already read + files you plan to read for this block)
+   - `Bounded context` (files already read + files you plan to read for this block)
    - `No-read assumptions` (assumptions accepted to avoid wider discovery)
-   - `Expansion triggers` (what would force corpus growth)
-6. Treat each new file read outside the declared bounded corpus as an entropy event:
+   - `Expansion triggers` (what would force context expansion)
+6. Treat each new file read outside the declared bounded context as an entropy event:
    - log the file/path and why it was needed
    - re-evaluate whether the active task remains `100%`
    - split/re-scope into a new task block if needed
 
 ### 100% TODO Rule (Execution)
-A TODO is `100%` only within the declared task block and bounded corpus. It can be completed now without:
-- reading files outside the declared bounded corpus,
+A TODO is `100%` only within the declared task block and bounded context. It can be completed now without:
+- reading files outside the declared bounded context,
 - investigating new subsystems/background code,
 - external docs/web lookups,
 - unresolved product/semantic decisions.
@@ -78,10 +79,10 @@ If any of the above is required, the TODO is not `100%` for this invocation.
    - First check whether the selected TODO is `100%` under the rule above.
    - If it is not `100%`, do not expand discovery blindly. Instead:
      - note why it is not `100%` (`file-read`, `subsystem-read`, `external`, or `decision`)
-     - split out at least one smaller `100%` subtask with its own bounded corpus when possible
+     - split out at least one smaller `100%` subtask with its own bounded context when possible
      - record the remaining item in `Decision Queue` or `Backlog` in `plan.md` (preserve existing style if present)
-   - Read only the files in the declared bounded corpus for the chosen `100%` slice.
-   - If corpus expansion becomes necessary, explicitly record the entropy event and re-estimate before continuing.
+   - Read only the files in the declared bounded context for the chosen `100%` slice.
+   - If context expansion becomes necessary, explicitly record the entropy event and re-estimate before continuing.
    - Make code changes.
    - Add/update tests when practical.
    - Run focused validation (targeted tests/checks/lint/build) relevant to the changed files.
@@ -94,7 +95,7 @@ Guidance:
 - Complete at least one meaningful task per invocation when feasible.
 - It is acceptable to complete multiple adjacent tasks if they are tightly coupled and validated together.
 - Prefer targeted commands (`rg`, focused tests) over broad scans.
-- If no pending task is `100%`, still deliver a cheaper next step by editing `plan.md` to create at least one explicit per-track `100%` subtask (with bounded corpus intent) or a concrete decision question.
+- If no pending task is `100%`, still deliver a cheaper next step by editing `plan.md` to create at least one explicit per-track `100%` subtask (with bounded context intent) or a concrete decision question.
 - If you identify a `100%` TODO, execute it now or explain why execution was impossible after a direct attempt. Re-partitioning without repo progress is not success.
 
 ---
@@ -114,9 +115,9 @@ Guidance:
 Return a concise execution summary with:
 - Track selected (`track_id`)
 - TODO(s) completed / in progress
-- declared task block + bounded corpus
-- `100%` slice executed (or why none existed within that corpus)
-- entropy events (new file reads outside corpus) and any re-estimates, if they occurred
+- declared task block + bounded context
+- `100%` slice executed (or why none existed within that context)
+- entropy events (new file reads outside context) and any re-estimates, if they occurred
 - any `Decision Queue` / `Backlog` updates created this invocation
 - Files changed
 - Validation run + result
