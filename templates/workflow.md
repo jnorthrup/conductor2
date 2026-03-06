@@ -1,5 +1,20 @@
 # Project Workflow
 
+## Worker Protocol (Bounded + Hostile)
+
+| Concept | Rule |
+|---------|------|
+| Worker Limits | Max 2 concurrent. Each declares bounded corpus before launch. |
+| Bounded Corpus | Exact files/dirs. No subsystem discovery. |
+| Stop Condition | One slice or first concrete blocker. |
+| Rendezvous Payload | changed files, verification command, result, blocker |
+| Truth-Artifact Ownership | Only closing agent writes plan.md, tracks.md, status |
+| Reconciliation Order | 1) Runtime, 2) Tests, 3) Smoke/artifacts, 4) Truth docs |
+| History Hygiene | No branches/worktrees/sessions. Squash theatrical history. |
+| Forbidden Moves | Workers cannot flip status, claim completion from tests alone, or touch truth artifacts. |
+
+Workers are proposal engines, not truth authorities. Output must survive hostile reconciliation before plan advancement.
+
 ## Guiding Principles
 
 1. **The Plan is the Source of Truth:** All work must be tracked in `plan.md`
@@ -67,36 +82,29 @@ All tasks follow a strict lifecycle:
     - **Action:** Stage the modified `plan.md` file.
     - **Action:** Commit this change with a descriptive message (e.g., `conductor(plan): Mark task 'Create user model' as complete`).
 
-### Background Delegation Protocol
+### Background Delegation Protocol (Concrete)
 
-Use delegated/background agents only for bounded slices. Every delegated run must declare:
+Every delegated worker must declare before launch:
+1. **WORKER_LIMITS=2** - Maximum concurrent workers
+2. **BOUNDED_CORPUS="<exact files/dirs>"** - Exact files/dirs allowed, no subsystem discovery
+3. **STOP_CONDITION="one slice or first blocker"** - Stop after one slice or first concrete blocker
 
-1. **Bounded Corpus:**
-   - Exact files or directories allowed.
-   - Explicitly forbidden paths when helpful.
+Required rendezvous payload (worker returns):
+- `changed files: [<list>]`
+- `verification: "<command run>"`
+- `result: "passed|failed|blocked"`
+- `blocker: "<concrete blocker or 'none'>"`
 
-2. **Stop Condition:**
-   - One slice only.
-   - Stop after code + focused verification, or on the first concrete blocker.
+Forbidden delegated actions:
+- Flipping plan.md, tracks.md, TODO checklists, status summaries
+- Claiming completion based on tests alone when runtime unverified
+- Creating branches/worktrees/sessions
 
-3. **Required Rendezvous Payload:**
-   - Changed files
-   - Commands run for verification
-   - Actual result (`passed`, `failed`, `blocked`)
-   - Remaining blocker or next step
-
-4. **Forbidden Delegated Actions:**
-   - Flipping `plan.md`, `tracks.md`, TODO checklists, or status summaries without reconciliation
-   - Claiming completion based on docs/tests alone when runtime behavior is unverified
-   - Creating worktrees/branches unless the user explicitly asked for them
-
-5. **Closing-Agent Reconciliation Order:**
-   - Runtime behavior
-   - Focused tests
-   - Smoke/artifacts
-   - Truth documents and checklist state
-
-If the delegated output does not survive this order, the run is proposal noise, not completed work.
+Closing-agent hostile reconciliation order:
+1. Runtime behavior verified (run verification command)
+2. Focused tests pass
+3. Smoke/artifacts confirmed working
+4. Only then: advance truth documents
 
 ### Phase Completion Verification and Checkpointing Protocol
 

@@ -19,6 +19,37 @@ Productivity rules:
 
 If a tool call fails, report the failure and either recover or stop with a concrete blocker.
 
+## Worker Protocol (Enforced)
+```
+DELEGATED WORKER LAUNCH:
+  WORKER_LIMITS=2
+  BOUNDED_CORPUS="<exact files/dirs>"
+  STOP_CONDITION="one slice or first blocker"
+
+WORKER RETURNS (required):
+  - changed files: [<list>]
+  - verification: "<command run>"
+  - result: "passed|failed|blocked"
+  - blocker: "<concrete blocker or 'none'>"
+
+CLOSING AGENT RECONCILIATION (hostile):
+  1. Run verification command -> confirm pass
+  2. Run focused tests -> confirm pass
+  3. Smoke test artifacts -> confirm works
+  4. Only then: mark TODO [x], update plan.md
+```
+
+| Concept | Rule |
+|---------|------|
+| Worker Limits | Max 2 concurrent delegated workers. Each must declare bounded corpus before launch. |
+| Rendezvous Payload | Required: `changed files`, `verification commands run`, `actual result`, `remaining blocker`. |
+| Truth-Artifact Ownership | Only the closing agent may write to `plan.md`, `tracks.md`, status summaries. |
+| Reconciliation Order | 1) Runtime behavior, 2) Focused tests, 3) Smoke/artifacts, 4) Truth documents. |
+| History Hygiene | No branches/worktrees/sessions created by workers. Squash theatrical history. |
+| Forbidden Moves | Workers cannot flip plan status, claim completion from tests alone, or touch truth artifacts. |
+
+Workers are proposal engines, not truth authorities. All delegated output must survive hostile reconciliation before plan advancement.
+
 ---
 
 ## 1. Setup Check
