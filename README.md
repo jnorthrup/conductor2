@@ -58,6 +58,8 @@ Conductor's practical "queue" is the track plan itself: a durable checklist in `
 
 This release tightens that loop with smaller command prompts and lightweight runtime helpers (`skill/scripts/run-conductor.sh` and the Copilot `conductor-agent` wrapper), so the next action is cheap to recover and execute.
 
+For async/background agent use, Conductor treats the repo plan as the rendezvous point. Delegated workers should return bounded artifacts only (changed files, verification run, actual failures/blockers), while the primary agent remains responsible for reconciling truth, updating plans, and squashing theatrical intermediate history.
+
 ## Commands
 
 | Command | Purpose |

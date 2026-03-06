@@ -8,6 +8,7 @@
 4. **High Code Coverage:** Aim for >80% code coverage for all modules
 5. **User Experience First:** Every decision should prioritize user experience
 6. **Non-Interactive & CI-Aware:** Prefer non-interactive commands. Use `CI=true` for watch-mode tools (tests, linters) to ensure single execution.
+7. **Delegated Workers Are Proposers, Not Arbiters:** Background or delegated agents may produce candidate changes, but only the closing agent may advance plan/status truth after reconciling runtime behavior, tests, smoke/artifacts, and remaining blockers.
 
 ## Task Workflow
 
@@ -65,6 +66,37 @@ All tasks follow a strict lifecycle:
 11. **Commit Plan Update:**
     - **Action:** Stage the modified `plan.md` file.
     - **Action:** Commit this change with a descriptive message (e.g., `conductor(plan): Mark task 'Create user model' as complete`).
+
+### Background Delegation Protocol
+
+Use delegated/background agents only for bounded slices. Every delegated run must declare:
+
+1. **Bounded Corpus:**
+   - Exact files or directories allowed.
+   - Explicitly forbidden paths when helpful.
+
+2. **Stop Condition:**
+   - One slice only.
+   - Stop after code + focused verification, or on the first concrete blocker.
+
+3. **Required Rendezvous Payload:**
+   - Changed files
+   - Commands run for verification
+   - Actual result (`passed`, `failed`, `blocked`)
+   - Remaining blocker or next step
+
+4. **Forbidden Delegated Actions:**
+   - Flipping `plan.md`, `tracks.md`, TODO checklists, or status summaries without reconciliation
+   - Claiming completion based on docs/tests alone when runtime behavior is unverified
+   - Creating worktrees/branches unless the user explicitly asked for them
+
+5. **Closing-Agent Reconciliation Order:**
+   - Runtime behavior
+   - Focused tests
+   - Smoke/artifacts
+   - Truth documents and checklist state
+
+If the delegated output does not survive this order, the run is proposal noise, not completed work.
 
 ### Phase Completion Verification and Checkpointing Protocol
 
