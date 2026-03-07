@@ -60,24 +60,16 @@ This release tightens that loop with smaller command prompts and lightweight run
 
 For async/background agent use, Conductor treats the repo plan as the rendezvous point. Delegated workers should return bounded artifacts only (changed files, verification run, actual failures/blockers), while the primary agent remains responsible for reconciling truth, updating plans, and squashing theatrical intermediate history.
 
-## Coding Lane Selection
+## Model Authority
 
-Conductor should not treat any exact model id as permanent truth. Providers release new models constantly, queue behavior shifts, and client catalogs go stale.
+Conductor does not make model decisions.
 
-Rules:
+Humans stay on top of model choice through the menu or host wrapper. Conductor only requires that:
 
-- discover live candidates from the gateway/provider inventory first
-- pick a lane that is:
-  - free or explicitly user-approved
-  - good enough for coding
-  - backed by env keys that are present now
-  - responsive enough under a cheap probe
-- rerank per session instead of hardcoding a permanent winner
-- direct `nvidia/*` routes require `NVIDIA_API_KEY`
-- `kilo/*` and gateway/free lanes require `KILO_API_KEY` (or `KILOAI_API_KEY` where appropriate)
-- do not default to `qwen3-next`, `nemotron`, or similar NVIDIA enterprise baby models for coding work
-
-Current good examples may include GLM5, Kimi K2.5, or MiniMax, but those are examples, not doctrine.
+- the selected route is declared before delegated work starts
+- the required env contract is declared before launch
+- workers consume the chosen route instead of inventing their own
+- missing env or route mismatch is treated as a blocker
 
 ## Concept Drift Control
 

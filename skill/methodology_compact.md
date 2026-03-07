@@ -29,10 +29,9 @@ CLOSING AGENT RECONCILIATION (hostile):
 | Rendezvous Payload | changed files, verification command, result, blocker |
 | Model Truth | Gateway `/models`, `/providers`, `/models-by-provider` is authoritative; client catalogs are hints. |
 | Free-Lane Default | Use verified `:free` routes first for delegated workers unless paid capacity is explicitly required. |
-| Coding Lane Policy | Choose a live gateway-visible, free or user-approved, coding-capable, env-backed lane; rerank each session. |
-| Avoid List | Do not default to `qwen3-next`, `nemotron`, or similar NVIDIA enterprise baby models for coding. |
+| Model Authority | Conductor does not rank or pin models; humans choose them through the menu/host wrapper. |
 | Host Wrapper | Prefer Literbike/OpenAI-compatible host wrappers for agent execution when available. |
-| Env Contract | Declare required API keys up front; missing env is a blocker, not a guess. |
+| Env Contract | Use the human-selected route plus its declared env contract; missing env is a blocker, not a guess. |
 | Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
 | Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
 | TODO Authority | `review` is the inspector for TODO truth; `implement` does not self-certify ambiguous completion. |
@@ -50,19 +49,10 @@ Workers are proposal engines, not truth authorities. Output must survive hostile
    - `/models`
    - `/providers`
    - `/models-by-provider`
-2. For coding/implementation work, select by policy, not folklore:
-   - live in the current gateway/provider inventory
-   - free or explicitly user-approved
-   - coding-capable enough for the slice at hand
-   - env-backed right now
-   - responsive enough under a cheap probe
-3. Avoid `qwen3-next`, `nemotron`, and similar NVIDIA enterprise baby models as default coding lanes.
-4. Launch workers through the host wrapper when available (for example Literbike/OpenAI-compatible routing) instead of trusting stale client-side model caches.
-5. Declare the env contract before launch:
-   - `NVIDIA_API_KEY` for direct `nvidia/*` routes
-   - gateway keys such as `KILO_API_KEY` or `KILOAI_API_KEY` for `kilo/*` and free gateway lanes
-   - provider aliases when directly supported (`KIMI_API_KEY`, `ZAI_API_KEY`, etc.)
-6. Treat missing env, missing gateway route, route/entitlement mismatch, or deep queue/stall as concrete blockers and rerank.
+2. Humans choose the active model/route through the menu or host wrapper; Conductor does not encode rankings or provider preferences.
+3. Launch workers through the host wrapper when available (for example Literbike/OpenAI-compatible routing) instead of trusting stale client-side model caches.
+4. Declare the selected route and env contract before launch.
+5. Treat missing env, missing gateway route, or route/entitlement mismatch as concrete blockers.
 
 ### Ownership and Overlap Resolution
 

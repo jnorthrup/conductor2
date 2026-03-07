@@ -11,10 +11,8 @@ Productivity rules:
 - Validate changes with focused checks/tests before marking tasks complete.
 - For delegated/background workers, prefer gateway-verified `:free` model lanes first unless the task explicitly requires paid capacity.
 - Treat client-side model catalogs as hints only. Gateway discovery (`/models`, `/providers`, `/models-by-provider`) is the source of truth for model availability.
-- When using Literbike or another OpenAI-compatible host wrapper, declare the required API-key env contract up front and prefer gateway keys (`KILO_API_KEY`, `KILOAI_API_KEY`) for free routed lanes when present.
-- Do not treat any exact model id as permanent truth. Provider catalogs change frequently.
-- For coding workers, select a lane by policy: live gateway-visible, free or user-approved, coding-capable, env-backed, and cheap to probe now.
-- Keep a short avoid-list for clearly rejected coding lanes (for example `qwen3-next`, `nemotron`, or similar enterprise baby models) unless the user explicitly asks for them.
+- Conductor does not rank, pin, or select models. Humans stay on top of model choice through the menu or host wrapper.
+- When using Literbike or another host wrapper, require the delegated worker to consume the human-selected route and declared env contract rather than inventing one.
 - For cross-repo work, declare the ownership map before coding: canonical home, host wrapper, compatibility shell, duplicate surfaces.
 - One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second sources of truth.
 - `review` is the inspector for TODO truth. `implement` should not self-certify ambiguous completion.
@@ -58,10 +56,9 @@ CLOSING AGENT RECONCILIATION (hostile):
 | Rendezvous Payload | Required: `changed files`, `verification commands run`, `actual result`, `remaining blocker`. |
 | Model Truth | Gateway discovery is authoritative. Client-side model lists are only hints. |
 | Free-Lane Default | Prefer verified `:free` routes for delegated workers unless the slice explicitly requires paid capacity. |
-| Coding Lane Policy | Pick a live gateway-visible, free or user-approved, coding-capable, env-backed model; rerank each session. |
-| Avoid List | Do not default to `qwen3-next`, `nemotron`, or other NVIDIA enterprise baby models for coding tasks. |
+| Model Authority | Conductor does not rank or pin models; humans choose them through the menu/host wrapper. |
 | Host Wrapper | Prefer Literbike/OpenAI-compatible host wrappers for worker execution when available. |
-| Env Contract | Declare required API keys before launch; reconcile missing env as a concrete blocker. |
+| Env Contract | Use the human-selected route plus its declared env contract; missing env is a concrete blocker. |
 | Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
 | Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
 | TODO Authority | `review` is the inspector for TODO truth; `implement` does not self-certify ambiguous completion. |
