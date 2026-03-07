@@ -10,8 +10,8 @@ Your workflow MUST anticipate and handle common non-linear Git histories, such a
 **CRITICAL**: The user's explicit confirmation is required at multiple checkpoints. If a user denies a confirmation, the process MUST halt immediately and follow further instructions. 
 
 **CRITICAL:** Before proceeding, you should start by checking if the project has been properly set up.
-1.  **Verify Tracks File:** Check if the file `conductor/tracks.md` exists. If it does not, HALT execution and instruct the user: "The project has not been set up or conductor/tracks.md has been corrupted. Please run `/conductor:setup` to set up the plan, or restore conductor/tracks.md."
-2.  **Verify Track Exists:** Check if the file `conductor/tracks.md` is not empty. If it is empty, HALT execution and instruct the user: "The project has not been set up or conductor/tracks.md has been corrupted. Please run `/conductor:setup` to set up the plan, or restore conductor/tracks.md." 
+1.  **Verify Tracks File:** Check if the file `conductor/tracks.md` exists. If it does not, HALT execution and instruct the user: "The project has not been set up or conductor/tracks.md has been corrupted. Please run `setup` through your local Conductor surface, or restore conductor/tracks.md."
+2.  **Verify Track Exists:** Check if the file `conductor/tracks.md` is not empty. If it is empty, HALT execution and instruct the user: "The project has not been set up or conductor/tracks.md has been corrupted. Please run `setup` through your local Conductor surface, or restore conductor/tracks.md." 
 
 **CRITICAL**: You must validate the success of every tool call. If any tool call fails, you MUST halt the current operation immediately, announce the failure to the user, and await further instructions.
 
@@ -22,7 +22,7 @@ Your workflow MUST anticipate and handle common non-linear Git histories, such a
 
 1.  **Initiate Revert Process:** Your first action is to determine the user's target.
 
-2.  **Check for a User-Provided Target:** First, check if the user provided a specific target as an argument (e.g., `/conductor:revert track <track_id>`).
+2.  **Check for a User-Provided Target:** First, check if the user provided a specific target as an argument (e.g., `revert track <track_id>` through the local Conductor surface).
     *   **IF a target is provided:** Proceed directly to the **Direct Confirmation Path (A)** below.
     *   **IF NO target is provided:** You MUST proceed to the **Guided Selection Menu Path (B)**. This is the default behavior.
 
@@ -121,4 +121,3 @@ Your workflow MUST anticipate and handle common non-linear Git histories, such a
 3.  **Verify Plan State:** After all reverts succeed, read the relevant `plan.md` file(s) again to ensure the reverted item has been correctly reset. If not, perform a file edit to fix it and commit the correction.
 4.  **Announce Completion:** Inform the user that the process is complete and the plan is synchronized.
 """
-

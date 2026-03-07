@@ -56,7 +56,7 @@ CLOSING AGENT RECONCILIATION:
   4. Only then update truth artifacts
 ```
 
-- Workers are proposal engines, not truth authorities.
+- Workers are bounded executors, not truth authorities.
 - Max 2 concurrent workers.
 - Each worker declares an exact bounded corpus before starting.
 - Workers stop after one slice or the first concrete blocker.

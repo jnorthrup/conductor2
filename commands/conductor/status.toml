@@ -45,7 +45,7 @@ Produce a concise report with:
 - Overall summary (`tracks completed / total`)
 - Track-by-track snapshot (status + task counts when available)
 - Current active track (best effort)
-- Next recommended action (usually `conductor implement` on the next incomplete track)
+- Next recommended action (usually `implement` on the next incomplete track, launched through the local Conductor surface)
 - TODO truth / early-stop warnings
 - Warnings / inconsistencies (if any)
 

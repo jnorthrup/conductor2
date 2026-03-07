@@ -9,9 +9,12 @@ Productivity rules:
 - Use project context files to infer defaults.
 - Keep the plan executable (phases + concrete tasks with checkboxes).
 - Optimize for low discovery cost, but do not force detailed `100%` slicing during track creation.
-- `newTrack` is a scope-capture step: maximize concrete feature coverage and capture unknowns; defer precise `100%` planning to execution start (`conductor implement`) when a bounded corpus can be declared.
+- `newTrack` is a scope-capture step: maximize concrete feature coverage and capture unknowns; defer precise `100%` planning to execution start (`implement`) when a bounded corpus can be declared.
+- Streamline user-time overhead: capture only the minimum launch context now and rely on in-context repo rediscovery during execution for the rest.
 - Ask and answer the track-launch maneuvering question: "How do we line this up and knock it all down?"
 - If the requested work spans repos or duplicated surfaces, capture ownership explicitly: canonical home, host wrapper, compatibility shell, and duplicate surfaces.
+- Gemini CLI and Antigravity are different Google surfaces; do not assume Gemini-extension behavior in Antigravity.
+- Do not create repo-local Conductor helper scripts, wrappers, or copied command files during track creation unless the task explicitly changes Conductor itself.
 
 If a tool call fails, report the failure and stop or recover explicitly.
 
@@ -88,7 +91,7 @@ Cold tracks often launch with few/no `100%` slices; optimize for context acquisi
      - `## First Maneuver (Line It Up / Knock It Down)` (the hard question to tackle first and suggested context to load first)
      - `## Unknowns / Decisions / Risks` (items requiring later repo reads or decisions)
      - `## Deferred / Out-of-Scope for This Track` (explicitly postponed)
-   - Add a short note that detailed `100%` slices and bounded-corpus estimates are declared at execution start in `conductor implement`.
+   - Add a short note that detailed `100%` slices and bounded-corpus estimates are declared at execution start in `implement`.
    - Avoid fake precision; optional uncertainty labels like `certainty=high|med|low` are fine.
    - Add short context-ordering hints to TODOs when practical:
      - `files:` primary files for the TODO
@@ -131,7 +134,7 @@ Return:
 - optional ephemeral temperature assessment (`cold`/`warm`/`hot`) + rationale (do not persist as a track fact)
 - recommended first maneuver (what context to line up first and why)
 - unknowns / risks / deferred split (if broad track)
-- next command (`conductor implement`)
+- next command (`implement`)
 
 Do not force a long approval loop unless the user explicitly asks for one.
 """

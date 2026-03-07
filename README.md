@@ -5,19 +5,31 @@ Compact Conductor distribution.
 This repo is the method, not the active project state.
 
 Canonical installer: `install.sh`
-- Compatibility entrypoints delegate to the root installer rather than carrying separate installer logic.
+- Run it from the repo where you want Conductor available, or from any working directory outside this source tree.
+- Compatibility entrypoints (`install_en.sh`, `skill/scripts/install.sh`) delegate to the root installer rather than carrying separate installer logic.
 
 - Canonical doctrine lives in `skill/SKILL.md`.
 - Project truth lives only in the target repo's local `/conductor/` directory.
 - `conductor2` does not own model/runtime choice.
 - `implement` is an agent entry intent, not a hardcoded CLI executor.
-- Delegated workers are proposal engines; `review` owns TODO truth.
+- Delegated workers are bounded executors; `review` owns TODO truth.
 
 Supported surfaces:
 
 - Codex, Claude Code, and OpenCode install Conductor as a plain skill.
 - Gemini CLI installs Conductor as an extension surface using `gemini-extension.json`.
 - Antigravity installs Conductor as a plain skill under the Google toolchain, not as a Gemini CLI extension.
+
+Install layout:
+
+- Plain skill surfaces (Codex, Claude Code, OpenCode, Antigravity) receive `SKILL.md` plus symlinks to `commands/` and `templates/`.
+- Gemini CLI receives the same layout plus `gemini-extension.json`.
+- The installer deliberately avoids copying repo metadata such as `README.md`, `LICENSE`, or release files into client installs.
+
+Runtime handoff:
+
+- `skill/scripts/run-conductor.sh <command>` prefers an installed `conductor` CLI when one is available.
+- Otherwise it resolves the highest-priority supported local agent surface, then prints the selected surface, the command TOML path, and the cache file used for adapter discovery.
 
 Behavior rules across tools:
 

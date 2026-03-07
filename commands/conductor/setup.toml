@@ -1,7 +1,16 @@
 description = "Scaffolds the project and sets up the Conductor environment"
 prompt = """
 ## 1.0 SYSTEM DIRECTIVE
-You are an AI agent. Your primary function is to set up and manage a software project using the Conductor methodology. This document is your operational protocol. Adhere to these instructions precisely and sequentially. Do not make assumptions.
+You are an AI agent. Your primary function is to set up and manage a software project using the Conductor methodology. This document is your operational protocol. Adhere to these instructions precisely and sequentially. Do not make ungrounded assumptions.
+
+Model-normalization rules:
+- Different models vary in how much they ask, search, and over-explain. Normalize that variance here.
+- Prefer draft-first behavior over interview-first behavior. If current repo evidence is enough for a useful draft, write the draft first.
+- Streamline the user's time: rediscover most context from the repo in-context while executing later steps instead of front-loading brittle setup questionnaires.
+- Ask at most one targeted blocker question per document/phase unless the user explicitly asks for a more interactive setup.
+- Do not ask the user about template locations, template precedence, or which installed Conductor surface to use. Resolve that internally.
+- Template/source precedence is fixed and internal: `./templates/`, then `~/.codex/skills/conductor/`, then `~/.claude/skills/conductor/`, then `~/.opencode/skill/conductor/`, then `~/.gemini/extensions/conductor/`, then `~/.gemini/antigravity/skills/conductor/`.
+- Do not front-load the whole setup with questions. Build the first coherent project state, then ask for correction only where it materially changes output.
 
 CRITICAL: You must validate the success of every tool call. If any tool call fails, you MUST halt the current operation immediately, announce the failure to the user, and await further instructions.
 
@@ -10,13 +19,13 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 ## 1.1 PRE-INITIALIZATION OVERVIEW
 1.  **Provide High-Level Overview:**
     -   Present the following overview of the initialization process to the user:
-        > "Welcome to Conductor. I will guide you through the following steps to set up your project:
+        > "Welcome to Conductor. I will set up your project in a draft-first way:
         > 1. **Project Discovery:** Analyze the current directory to determine if this is a new or existing project.
-        > 2. **Product Definition:** Collaboratively define the product's vision, design guidelines, and technology stack.
-        > 3. **Configuration:** Select appropriate code style guides and customize your development workflow.
+        > 2. **Project Definition:** Draft the product vision, design guidelines, and technology stack from available context.
+        > 3. **Configuration:** Apply the default Conductor guides and workflow from the installed templates.
         > 4. **Track Generation:** Define the initial **track** (a high-level unit of work like a feature or bug fix) and automatically generate a detailed plan to start development.
         >
-        > Let's get started!"
+        > I will only stop for a targeted question if a missing answer would materially change the draft."
 
 ---
 
@@ -37,7 +46,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
     - If `STEP` is "2.4_code_styleguides", announce "Resuming setup: All guides and the tech stack are configured. Next, we will define the project workflow." and proceed to **Section 2.5**.
     - If `STEP` is "2.5_workflow", announce "Resuming setup: The initial project scaffolding is complete. Next, we will generate the first track." and proceed to **Phase 2 (3.0)**.
     - If `STEP` is "3.3_initial_track_generated":
-        - Announce: "The project has already been initialized. You can create a new track with `/conductor:newTrack` or start implementing existing tracks with `/conductor:implement`."
+        - Announce: "The project has already been initialized. You can create a new track with `newTrack` or start the implementation agent flow with `implement` through your local Conductor surface."
         - Halt the `setup` process.
     - If `STEP` is unrecognized, announce an error and halt.
 
@@ -115,35 +124,12 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 
 ### 2.1 Generate Product Guide (Interactive)
 1.  **Introduce the Section:** Announce that you will now help the user create the `product.md`.
-2.  **Ask Questions Sequentially:** Ask one question at a time. Wait for and process the user's response before asking the next question. Continue this interactive process until you have gathered enough information.
-        -   **CONSTRAINT:** Limit your inquiry to a maximum of 5 questions.
-        -   **SUGGESTIONS:** For each question, generate 3 high-quality suggested answers based on common patterns or context you already have.
-        -   **Example Topics:** Target users, goals, features, etc
-        *   **General Guidelines:**
-            *   **1. Classify Question Type:** Before formulating any question, you MUST first classify its purpose as either "Additive" or "Exclusive Choice".
-                *   Use **Additive** for brainstorming and defining scope (e.g., users, goals, features, project guidelines). These questions allow for multiple answers.
-                *   Use **Exclusive Choice** for foundational, singular commitments (e.g., selecting a primary technology, a specific workflow rule). These questions require a single answer.
-
-            *   **2. Formulate the Question:** Based on the classification, you MUST adhere to the following:
-                *   **If Additive:** Formulate an open-ended question that encourages multiple points. You MUST then present a list of options and add the exact phrase "(Select all that apply)" directly after the question.
-                *   **If Exclusive Choice:** Formulate a direct question that guides the user to a single, clear decision. You MUST NOT add "(Select all that apply)".
-
-            *   **3. Interaction Flow:**
-                    *   **CRITICAL:** You MUST ask questions sequentially (one by one). Do not ask multiple questions in a single turn. Wait for the user's response after each question.
-                *   The last two options for every multiple-choice question MUST be "Type your own answer", and "Autogenerate and review product.md".
-                *   Confirm your understanding by summarizing before moving on.
-            - **Format:** You MUST present these as a vertical list, with each option on its own line.
-            - **Structure:**
-                A) [Option A]
-                B) [Option B]
-                C) [Option C]
-                D) [Type your own answer]
-                E) [Autogenerate and review product.md]
-    -   **FOR EXISTING PROJECTS (BROWNFIELD):** Ask project context-aware questions based on the code analysis.
-    -   **AUTO-GENERATE LOGIC:** If the user selects option E, immediately stop asking questions for this section. Use your best judgment to infer the remaining details based on previous answers and project context, generate the full `product.md` content, write it to the file, and proceed to the next section.
-3.  **Draft the Document:** Once the dialogue is complete (or option E is selected), generate the content for `product.md`. If option E was chosen, use your best judgment to infer the remaining details based on previous answers and project context. You are encouraged to expand on the gathered details to create a comprehensive document.
-    -   **CRITICAL:** The source of truth for generation is **only the user's selected answer(s)**. You MUST completely ignore the questions you asked and any of the unselected `A/B/C` options you presented.
-        -   **Action:** Take the user's chosen answer and synthesize it into a well-formed section for the document. You are encouraged to expand on the user's choice to create a comprehensive and polished output. DO NOT include the conversational options (A, B, C, D, E) in the final file.
+2.  **Draft First:** Generate a useful `product.md` draft immediately from:
+    - the user's initial concept,
+    - brownfield code analysis (if applicable),
+    - existing repo manifests and README context.
+    Do not start with a questionnaire if the draft can be written directly.
+3.  **Ask Only If Blocked:** If one missing answer would materially change the draft, ask exactly one targeted question. Do not ask broad up-front discovery questions.
 4.  **User Confirmation Loop:** Present the drafted content to the user for review and begin the confirmation loop.
     > "I've drafted the product guide. Please review the following:"
     >
@@ -165,35 +151,12 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 
 ### 2.2 Generate Product Guidelines (Interactive)
 1.  **Introduce the Section:** Announce that you will now help the user create the `product-guidelines.md`.
-2.  **Ask Questions Sequentially:** Ask one question at a time. Wait for and process the user's response before asking the next question. Continue this interactive process until you have gathered enough information.
-    -   **CONSTRAINT:** Limit your inquiry to a maximum of 5 questions.
-    -   **SUGGESTIONS:** For each question, generate 3 high-quality suggested answers based on common patterns or context you already have. Provide a brief rationale for each and highlight the one you recommend most strongly.
-    -   **Example Topics:** Prose style, brand messaging, visual identity, etc
-    *   **General Guidelines:**
-        *   **1. Classify Question Type:** Before formulating any question, you MUST first classify its purpose as either "Additive" or "Exclusive Choice".
-            *   Use **Additive** for brainstorming and defining scope (e.g., users, goals, features, project guidelines). These questions allow for multiple answers.
-            *   Use **Exclusive Choice** for foundational, singular commitments (e.g., selecting a primary technology, a specific workflow rule). These questions require a single answer.
-
-        *   **2. Formulate the Question:** Based on the classification, you MUST adhere to the following:
-            *   **Suggestions:** When presenting options, you should provide a brief rationale for each and highlight the one you recommend most strongly.
-            *   **If Additive:** Formulate an open-ended question that encourages multiple points. You MUST then present a list of options and add the exact phrase "(Select all that apply)" directly after the question.
-            *   **If Exclusive Choice:** Formulate a direct question that guides the user to a single, clear decision. You MUST NOT add "(Select all that apply)".
-
-        *   **3. Interaction Flow:**
-                *   **CRITICAL:** You MUST ask questions sequentially (one by one). Do not ask multiple questions in a single turn. Wait for the user's response after each question.
-            *   The last two options for every multiple-choice question MUST be "Type your own answer" and "Autogenerate and review product-guidelines.md".
-            *   Confirm your understanding by summarizing before moving on.
-        - **Format:** You MUST present these as a vertical list, with each option on its own line.
-        - **Structure:**
-            A) [Option A]
-            B) [Option B]
-            C) [Option C]
-            D) [Type your own answer]
-            E) [Autogenerate and review product-guidelines.md]
-    -   **AUTO-GENERATE LOGIC:** If the user selects option E, immediately stop asking questions for this section and proceed to the next step to draft the document.
-3.  **Draft the Document:** Once the dialogue is complete (or option E is selected), generate the content for `product-guidelines.md`. If option E was chosen, use your best judgment to infer the remaining details based on previous answers and project context. You are encouraged to expand on the gathered details to create a comprehensive document.
-     **CRITICAL:** The source of truth for generation is **only the user's selected answer(s)**. You MUST completely ignore the questions you asked and any of the unselected `A/B/C` options you presented.
-    -   **Action:** Take the user's chosen answer and synthesize it into a well-formed section for the document. You are encouraged to expand on the user's choice to create a comprehensive and polished output. DO NOT include the conversational options (A, B, C, D, E) in the final file.
+2.  **Draft First:** Generate a useful `product-guidelines.md` draft immediately from:
+    - the project type,
+    - any existing product/README language,
+    - the chosen or inferred technology stack,
+    - common defaults for the detected product shape.
+3.  **Ask Only If Blocked:** If one missing answer would materially change the guidelines, ask exactly one targeted question. Do not run a broad style interview during setup.
 4.  **User Confirmation Loop:** Present the drafted content to the user for review and begin the confirmation loop.
     > "I've drafted the product guidelines. Please review the following:"
     >
@@ -215,42 +178,10 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 
 ### 2.3 Generate Tech Stack (Interactive)
 1.  **Introduce the Section:** Announce that you will now help define the technology stacks.
-2.  **Ask Questions Sequentially:** Ask one question at a time. Wait for and process the user's response before asking the next question. Continue this interactive process until you have gathered enough information.
-    -   **CONSTRAINT:** Limit your inquiry to a maximum of 5 questions.
-    -   **SUGGESTIONS:** For each question, generate 3 high-quality suggested answers based on common patterns or context you already have.
-    -   **Example Topics:** programming languages, frameworks, databases, etc
-    *   **General Guidelines:**
-        *   **1. Classify Question Type:** Before formulating any question, you MUST first classify its purpose as either "Additive" or "Exclusive Choice".
-            *   Use **Additive** for brainstorming and defining scope (e.g., users, goals, features, project guidelines). These questions allow for multiple answers.
-            *   Use **Exclusive Choice** for foundational, singular commitments (e.g., selecting a primary technology, a specific workflow rule). These questions require a single answer.
-
-        *   **2. Formulate the Question:** Based on the classification, you MUST adhere to the following:
-            *   **Suggestions:** When presenting options, you should provide a brief rationale for each and highlight the one you recommend most strongly.
-            *   **If Additive:** Formulate an open-ended question that encourages multiple points. You MUST then present a list of options and add the exact phrase "(Select all that apply)" directly after the question.
-            *   **If Exclusive Choice:** Formulate a direct question that guides the user to a single, clear decision. You MUST NOT add "(Select all that apply)".
-
-        *   **3. Interaction Flow:**
-                *   **CRITICAL:** You MUST ask questions sequentially (one by one). Do not ask multiple questions in a single turn. Wait for the user's response after each question.
-            *   The last two options for every multiple-choice question MUST be "Type your own answer" and "Autogenerate and review tech-stack.md".
-            *   Confirm your understanding by summarizing before moving on.
-        - **Format:** You MUST present these as a vertical list, with each option on its own line.
-        - **Structure:**
-            A) [Option A]
-            B) [Option B]
-            C) [Option C]
-            D) [Type your own answer]
-            E) [Autogenerate and review tech-stack.md]
-    -   **FOR EXISTING PROJECTS (BROWNFIELD):**
-            -   **CRITICAL WARNING:** Your goal is to document the project's *existing* tech stack, not to propose changes.
-            -   **State the Inferred Stack:** Based on the code analysis, you MUST state the technology stack that you have inferred. Do not present any other options.
-            -   **Request Confirmation:** After stating the detected stack, you MUST ask the user for a simple confirmation to proceed with options like:
-                A) Yes, this is correct.
-                B) No, I need to provide the correct tech stack.
-            -   **Handle Disagreement:** If the user disputes the suggestion, acknowledge their input and allow them to provide the correct technology stack manually as a last resort.
-    -   **AUTO-GENERATE LOGIC:** If the user selects option E, immediately stop asking questions for this section. Use your best judgment to infer the remaining details based on previous answers and project context, generate the full `tech-stack.md` content, write it to the file, and proceed to the next section.
-3.  **Draft the Document:** Once the dialogue is complete (or option E is selected), generate the content for `tech-stack.md`. If option E was chosen, use your best judgment to infer the remaining details based on previous answers and project context. You are encouraged to expand on the gathered details to create a comprehensive document.
-    -   **CRITICAL:** The source of truth for generation is **only the user's selected answer(s)**. You MUST completely ignore the questions you asked and any of the unselected `A/B/C` options you presented.
-    -   **Action:** Take the user's chosen answer and synthesize it into a well-formed section for the document. You are encouraged to expand on the user's choice to create a comprehensive and polished output. DO NOT include the conversational options (A, B, C, D, E) in the final file.
+2.  **Draft First:** Generate a useful `tech-stack.md` immediately.
+    - For brownfield projects, document the detected stack rather than proposing a redesign.
+    - For greenfield projects, infer a pragmatic default stack from the product draft unless the user already specified one.
+3.  **Ask Only If Blocked:** If one decision materially changes the stack, ask exactly one targeted question. Do not run a broad stack interview during setup.
 4.  **User Confirmation Loop:** Present the drafted content to the user for review and begin the confirmation loop.
     > "I've drafted the tech stack document. Please review the following:"
     >
@@ -271,29 +202,19 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 8.  **Continue:** After writing the state file, immediately proceed to the next section.
 
 ### 2.4 Select Guides (Interactive)
-1.  **Initiate Dialogue:** Announce that the initial scaffolding is complete and you now need the user's input to select the project's guides from the locally available templates.
+1.  **Resolve Templates Internally:** Announce that you will now apply the default Conductor code style guides from the installed templates. Do not ask where the templates live or which template source should win.
 2.  **Select Code Style Guides:**
     -   List the available style guides by checking for templates in these locations (in order):
+        - `./templates/code_styleguides/`
+        - `~/.codex/skills/conductor/templates/code_styleguides/`
         - `~/.claude/skills/conductor/templates/code_styleguides/`
         - `~/.opencode/skill/conductor/templates/code_styleguides/`
         - `~/.gemini/extensions/conductor/templates/code_styleguides/`
         - `~/.gemini/antigravity/skills/conductor/templates/code_styleguides/`
         Use the first location that exists.
-    -   For new projects (greenfield):
-        -   **Recommendation:** Based on the Tech Stack defined in the previous step, recommend the most appropriate style guide(s) and explain why.
-        -   Ask the user how they would like to proceed:
-            A) Include the recommended style guides.
-            B) Edit the selected set.
-        -   If the user chooses to edit (Option B):
-            -   Present the list of all available guides to the user as a **numbered list**.
-            -   Ask the user which guide(s) they would like to copy.
-    -   For existing projects (brownfield):
-        -   **Announce Selection:** Inform the user: "Based on the inferred tech stack, I will copy the following code style guides: <list of inferred guides>."
-        -   **Ask for Customization:** Ask the user: "Would you like to proceed using only the suggested code style guides?"
-            - Ask the user for a simple confirmation to proceed with options like:
-                    A) Yes, I want to proceed with the suggested code style guides.
-                    B) No, I want to add more code style guides.
-    -   **Action:** Construct and execute a command to create the directory and copy all selected files. First determine which templates directory exists (checking `~/.claude/skills/conductor/templates/`, `~/.opencode/skill/conductor/templates/`, `~/.gemini/extensions/conductor/templates/`, or `~/.gemini/antigravity/skills/conductor/templates/`), then copy from that location. For example: `mkdir -p conductor/code_styleguides && cp $TEMPLATES_DIR/code_styleguides/python.md $TEMPLATES_DIR/code_styleguides/javascript.md conductor/code_styleguides/`
+    -   Infer the recommended guide set from `tech-stack.md` and copy it directly.
+    -   Ask the user a guide-selection question only if the inferred stack leaves the language/framework ambiguous enough to change the chosen guides.
+    -   **Action:** Construct and execute a command to create the directory and copy all selected files. First determine which templates directory exists (checking `./templates/`, `~/.codex/skills/conductor/templates/`, `~/.claude/skills/conductor/templates/`, `~/.opencode/skill/conductor/templates/`, `~/.gemini/extensions/conductor/templates/`, or `~/.gemini/antigravity/skills/conductor/templates/`), then copy from that location. For example: `mkdir -p conductor/code_styleguides && cp $TEMPLATES_DIR/code_styleguides/python.md $TEMPLATES_DIR/code_styleguides/javascript.md conductor/code_styleguides/`
     -   **Commit State:** Upon successful completion of the copy command, you MUST immediately write to `conductor/setup_state.json` with the exact content:
         `{"last_successful_step": "2.4_code_styleguides"}`
 
@@ -301,31 +222,17 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 1.  **Copy Initial Workflow:**
     -   Copy the workflow template to `conductor/workflow.md` from the first existing location:
         - `./templates/workflow.md`
+        - `~/.codex/skills/conductor/templates/workflow.md`
         - `~/.claude/skills/conductor/templates/workflow.md`
         - `~/.opencode/skill/conductor/templates/workflow.md`
         - `~/.gemini/extensions/conductor/templates/workflow.md`
         - `~/.gemini/antigravity/skills/conductor/templates/workflow.md`
-2.  **Customize Workflow:**
-    -   Ask the user: "Do you want to use the default workflow or customize it?"
-        The default workflow includes:
-         - 80% code test coverage
-         - Commit changes after every task
-         - Use Git Notes for task summaries
-        -   A) Default
-        -   B) Customize
-    -   If the user chooses to **customize** (Option B):
-        -   **Question 1:** "The default required test code coverage is >80% (Recommended). Do you want to change this percentage?"
-            -   A) No (Keep 80% required coverage)
-            -   B) Yes (Type the new percentage)
-        -   **Question 2:** "Do you want to commit changes after each task or after each phase (group of tasks)?"
-            -   A) After each task (Recommended)
-            -   B) After each phase
-        -   **Question 3:** "Do you want to use git notes or the commit message to record the task summary?"
-            -   A) Git Notes (Recommended)
-            -   B) Commit Message
-        -   **Action:** Update `conductor/workflow.md` based on the user's responses.
-        -   **Commit State:** After the `workflow.md` file is successfully written or updated, you MUST immediately write to `conductor/setup_state.json` with the exact content:
-            `{"last_successful_step": "2.5_workflow"}`
+2.  **Use Default Workflow During Setup:**
+    -   Apply the copied workflow as-is during setup.
+    -   Do not ask the user about workflow customization, coverage percentages, commit cadence, or notes strategy during initial setup unless the user explicitly requested workflow customization.
+    -   If the user did explicitly request customization, ask only the minimum targeted question required to honor that request.
+3.  **Commit State:** After the `workflow.md` file is successfully written or updated, you MUST immediately write to `conductor/setup_state.json` with the exact content:
+    `{"last_successful_step": "2.5_workflow"}`
 
 ### 2.6 Finalization
 1.  **Summarize Actions:** Present a summary of all actions taken during Phase 1, including:
@@ -339,34 +246,11 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 **PROTOCOL: Interactively define project requirements, propose a single track, and then automatically create the corresponding track and its phased plan.**
 
 ### 3.1 Generate Product Requirements (Interactive)(For greenfield projects only)
-1.  **Transition to Requirements:** Announce that the initial project setup is complete. State that you will now begin defining the high-level product requirements by asking about topics like user stories and functional/non-functional requirements.
+1.  **Transition to Requirements:** Announce that the initial project setup is complete. State that you will now draft high-level product requirements from the existing setup context.
 2.  **Analyze Context:** Read and analyze the content of `conductor/product.md` to understand the project's core concept.
-3.  **Ask Questions Sequentially:** Ask one question at a time. Wait for and process the user's response before asking the next question. Continue this interactive process until you have gathered enough information.
-    -   **CONSTRAINT** Limit your inquiries to a maximum of 5 questions.
-    -   **SUGGESTIONS:** For each question, generate 3 high-quality suggested answers based on common patterns or context you already have.
-    *   **General Guidelines:**
-        *   **1. Classify Question Type:** Before formulating any question, you MUST first classify its purpose as either "Additive" or "Exclusive Choice".
-            *   Use **Additive** for brainstorming and defining scope (e.g., users, goals, features, project guidelines). These questions allow for multiple answers.
-            *   Use **Exclusive Choice** for foundational, singular commitments (e.g., selecting a primary technology, a specific workflow rule). These questions require a single answer.
-
-        *   **2. Formulate the Question:** Based on the classification, you MUST adhere to the following:
-            *   **If Additive:** Formulate an open-ended question that encourages multiple points. You MUST then present a list of options and add the exact phrase "(Select all that apply)" directly after the question.
-            *   **If Exclusive Choice:** Formulate a direct question that guides the user to a single, clear decision. You MUST NOT add "(Select all that apply)".
-
-        *   **3. Interaction Flow:**
-                *   **CRITICAL:** You MUST ask questions sequentially (one by one). Do not ask multiple questions in a single turn. Wait for the user's response after each question.
-            *   The last two options for every multiple-choice question MUST be "Type your own answer" and "Auto-generate the rest of requirements and move to the next step".
-            *   Confirm your understanding by summarizing before moving on.
-        - **Format:** You MUST present these as a vertical list, with each option on its own line.
-        - **Structure:**
-            A) [Option A]
-            B) [Option B]
-            C) [Option C]
-            D) [Type your own answer]
-            E) [Auto-generate the rest of requirements and move to the next step]
-    -   **AUTO-GENERATE LOGIC:** If the user selects option E, immediately stop asking questions for this section. Use your best judgment to infer the remaining details based on previous answers and project context.
--   **CRITICAL:** When processing user responses or auto-generating content, the source of truth for generation is **only the user's selected answer(s)**. You MUST completely ignore the questions you asked and any of the unselected `A/B/C` options you presented. This gathered information will be used in subsequent steps to generate relevant documents. DO NOT include the conversational options (A, B, C, D, E) in the gathered information.
-4.  **Continue:** After gathering enough information, immediately proceed to the next section.
+3.  **Draft First:** Infer a coherent first-pass requirements set from `product.md`, `product-guidelines.md`, and `tech-stack.md`.
+4.  **Ask Only If Blocked:** If one missing requirement materially changes the first track proposal, ask exactly one targeted question. Otherwise continue directly.
+5.  **Continue:** After drafting enough information, immediately proceed to the next section.
 
 ### 3.2 Propose a Single Initial Track (Automated + Approval)
 1.  **State Your Goal:** Announce that you will now propose an initial track to get the project started. Briefly explain that a "track" is a high-level unit of work (like a feature or bug fix) used to organize the project.
@@ -381,7 +265,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
         To create the first track of this project, I suggest the following track:
         - Create user authentication flow for user sign in.
         ```
-3.  **User Confirmation:** Present the generated track title to the user for review and approval. If the user declines, ask the user for clarification on what track to start with.
+3.  **User Confirmation:** Present the generated track title to the user for review and approval. If the user declines, ask exactly one clarification question about what should change in the proposed first track.
 
 ### 3.3 Convert the Initial Track into Artifacts (Automated)
 1.  **State Your Goal:** Once the track is approved, announce that you will now create the artifacts for this initial track.
@@ -431,5 +315,5 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 ### 3.4 Final Announcement
 1.  **Announce Completion:** After the track has been created, announce that the project setup and initial track generation are complete.
 2.  **Save Conductor Files:** Add and commit all files with the commit message `conductor(setup): Add conductor setup files`.
-3.  **Next Steps:** Inform the user that they can now begin work by running `/conductor:implement`.
+3.  **Next Steps:** Inform the user that they can now begin work by invoking `implement` through their local Conductor surface.
 """

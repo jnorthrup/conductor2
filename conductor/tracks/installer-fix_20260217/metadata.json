@@ -1,7 +1,8 @@
 {
   "track_id": "installer-fix_20260217",
   "type": "bugfix",
-  "status": "in_progress",
+  "status": "completed",
   "created": "2026-02-17T04:54:00Z",
+  "updated": "2026-03-07T20:32:23Z",
   "description": "Fix multi-platform installer to copy only LLM-facing files"
 }

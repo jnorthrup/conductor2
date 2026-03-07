@@ -11,10 +11,14 @@
 - [x] Add Gemini-specific installation
 
 ## Phase 3: Verification
-- [ ] Test installer on fresh machine
-- [ ] Verify all 5 platforms load conductor correctly
-- [ ] Update README.md with install command
+- [x] Test installer on fresh machine
+- [x] Verify all 5 platforms load conductor correctly
+- [x] Update README.md with install command
 
 ## Phase 4: Documentation
-- [ ] Add multi-platform support section to README
-- [ ] Document which files each platform receives
+- [x] Add multi-platform support section to README
+- [x] Document which files each platform receives
+
+## Validation Notes
+- [x] `bash tests/run-conductor-cache-test.sh`
+- [x] `bash tests/install-layout-test.sh`
