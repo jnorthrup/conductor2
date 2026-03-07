@@ -11,6 +11,7 @@ Productivity rules:
 - Optimize for low discovery cost, but do not force detailed `100%` slicing during track creation.
 - `newTrack` is a scope-capture step: maximize concrete feature coverage and capture unknowns; defer precise `100%` planning to execution start (`conductor implement`) when a bounded corpus can be declared.
 - Ask and answer the track-launch maneuvering question: "How do we line this up and knock it all down?"
+- If the requested work spans repos or duplicated surfaces, capture ownership explicitly: canonical home, host wrapper, compatibility shell, and duplicate surfaces.
 
 If a tool call fails, report the failure and stop or recover explicitly.
 
@@ -44,6 +45,8 @@ When clarification is needed, ask/answer in this order and stop as soon as the t
 4. Author's best context hints (likely files/modules/subsystems/commits/traps).
 5. Likely workstreams / affected areas (high-level only; do not overfit to current guesses).
 6. Unknowns / decisions / risks to capture for later bounded planning.
+7. If the concept already appears in multiple repos/surfaces, ask/answer one ownership question:
+   - "Where should this concept ultimately live, and which surfaces are only wrappers or temporary migration shells?"
 
 Do not spend track creation time trying to prove `100%` execution slices up front. `100%` claims are created per track when execution starts and the agent declares a bounded corpus.
 Cold tracks often launch with few/no `100%` slices; optimize for context acquisition order. Incremental/hot tracks may start with many `100%` slices because the active context is already warm.
@@ -67,6 +70,7 @@ Cold tracks often launch with few/no `100%` slices; optimize for context acquisi
    - Overview
    - Problem
    - Goals
+   - Ownership Map (for cross-repo or duplicated-surface work)
    - Functional Requirements
    - Acceptance Criteria
    - Out of Scope
@@ -80,6 +84,7 @@ Cold tracks often launch with few/no `100%` slices; optimize for context acquisi
      - `## Concrete Features` (explicit user-requested outcomes)
      - `## Author Context Hints` (user-supplied best guesses at adequate starting context)
      - `## Candidate Workstreams` (high-level execution groupings)
+     - `## Ownership Map` (canonical home, host wrapper, compatibility shell, duplicate surfaces)
      - `## First Maneuver (Line It Up / Knock It Down)` (the hard question to tackle first and suggested context to load first)
      - `## Unknowns / Decisions / Risks` (items requiring later repo reads or decisions)
      - `## Deferred / Out-of-Scope for This Track` (explicitly postponed)

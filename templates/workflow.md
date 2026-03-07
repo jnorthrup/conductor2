@@ -12,6 +12,8 @@
 | Free-Lane Default | Prefer verified `:free` routes for delegated workers unless paid capacity is required. |
 | Host Wrapper | Prefer Literbike/OpenAI-compatible host wrappers for worker execution when available. |
 | Env Contract | Declare required API keys before launch; missing env is a concrete blocker. |
+| Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
+| Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
 | Truth-Artifact Ownership | Only closing agent writes plan.md, tracks.md, status |
 | Reconciliation Order | 1) Runtime, 2) Tests, 3) Smoke/artifacts, 4) Truth docs |
 | History Hygiene | No branches/worktrees/sessions. Squash theatrical history. |
@@ -29,6 +31,22 @@ When a delegated worker needs a model:
 4. Declare the required API-key env contract before launch.
 5. Treat missing env or route mismatches as blockers, not as excuses to guess.
 
+## Ownership and Overlap
+
+Before cross-repo implementation begins, write down:
+
+1. Canonical home for the concept
+2. Host wrapper or adapter, if any
+3. Compatibility shell or migration surface, if any
+4. Duplicate surfaces that should stop growing
+
+Rules:
+
+- One home per concept.
+- Wrappers wrap; they do not become alternate product brains.
+- Migration shells preserve parity and buy time; they do not accumulate new semantics.
+- If the same idea appears in multiple repos, either consolidate ownership or explicitly label the overlap as temporary research.
+
 ## Guiding Principles
 
 1. **The Plan is the Source of Truth:** All work must be tracked in `plan.md`
@@ -38,6 +56,7 @@ When a delegated worker needs a model:
 5. **User Experience First:** Every decision should prioritize user experience
 6. **Non-Interactive & CI-Aware:** Prefer non-interactive commands. Use `CI=true` for watch-mode tools (tests, linters) to ensure single execution.
 7. **Delegated Workers Are Proposers, Not Arbiters:** Background or delegated agents may produce candidate changes, but only the closing agent may advance plan/status truth after reconciling runtime behavior, tests, smoke/artifacts, and remaining blockers.
+8. **One Home Per Concept:** Cross-repo work must declare where a concept lives, which surface only wraps it, and which system is temporary migration scaffolding.
 
 ## Task Workflow
 

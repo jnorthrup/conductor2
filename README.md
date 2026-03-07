@@ -60,6 +60,33 @@ This release tightens that loop with smaller command prompts and lightweight run
 
 For async/background agent use, Conductor treats the repo plan as the rendezvous point. Delegated workers should return bounded artifacts only (changed files, verification run, actual failures/blockers), while the primary agent remains responsible for reconciling truth, updating plans, and squashing theatrical intermediate history.
 
+## Concept Drift Control
+
+Conductor assumes conceptual drift is mostly an ownership problem, not a prompt problem.
+
+For cross-repo or multi-surface work, every track should identify:
+
+- the **canonical home** for a concept
+- any **host wrapper** or adapter that exposes it
+- any **compatibility shell** that is temporary
+- any **duplicate implementation** that should stop growing
+
+The rule is simple:
+
+- one home per concept
+- wrappers wrap
+- migration shells translate
+- experimental duplicates do not become second sources of truth
+
+If a concept already exists in more than one repo, the track should explicitly decide whether the work is:
+
+- ownership consolidation
+- compatibility maintenance
+- temporary migration scaffolding
+- or deliberate parallel research
+
+If that decision is not made, Conductor treats the overlap as drift and requires the plan to capture it before more code is added.
+
 ## Commands
 
 | Command | Purpose |

@@ -12,6 +12,8 @@ Productivity rules:
 - For delegated/background workers, prefer gateway-verified `:free` model lanes first unless the task explicitly requires paid capacity.
 - Treat client-side model catalogs as hints only. Gateway discovery (`/models`, `/providers`, `/models-by-provider`) is the source of truth for model availability.
 - When using Literbike or another OpenAI-compatible host wrapper, declare the required API-key env contract up front and prefer gateway keys (`KILO_API_KEY`, `KILOAI_API_KEY`) for free routed lanes when present.
+- For cross-repo work, declare the ownership map before coding: canonical home, host wrapper, compatibility shell, duplicate surfaces.
+- One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second sources of truth.
 - Prefer `100%` TODOs first, not broad `100%` buckets. Treat `100%` as a per-track execution contract tied to a declared bounded context for this invocation.
 - `100%` is a first-choice execution heuristic, not the only constraint: sequencing, dependencies, validation value, and user intent still apply.
 - Delegated/background workers are proposal engines only. They may not redefine project truth.
@@ -53,6 +55,8 @@ CLOSING AGENT RECONCILIATION (hostile):
 | Free-Lane Default | Prefer verified `:free` routes for delegated workers unless the slice explicitly requires paid capacity. |
 | Host Wrapper | Prefer Literbike/OpenAI-compatible host wrappers for worker execution when available. |
 | Env Contract | Declare required API keys before launch; reconcile missing env as a concrete blocker. |
+| Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
+| Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
 | Truth-Artifact Ownership | Only the closing agent may write to `plan.md`, `tracks.md`, status summaries. |
 | Reconciliation Order | 1) Runtime behavior, 2) Focused tests, 3) Smoke/artifacts, 4) Truth documents. |
 | History Hygiene | No branches/worktrees/sessions created by workers. Squash theatrical history. |
@@ -100,6 +104,11 @@ Workers are proposal engines, not truth authorities. All delegated output must s
    - `Bounded context` (files already read + files you plan to read for this block)
    - `No-read assumptions` (assumptions accepted to avoid wider discovery)
    - `Expansion triggers` (what would force context expansion)
+   - if the task spans repos or duplicated surfaces, add an `Ownership map`:
+     - `Canonical home`
+     - `Host wrapper / adapter`
+     - `Compatibility shell`
+     - `Duplicate surfaces to freeze`
 6. Treat each new file read outside the declared bounded context as an entropy event:
    - log the file/path and why it was needed
    - re-evaluate whether the active task remains `100%`
@@ -109,6 +118,7 @@ Workers are proposal engines, not truth authorities. All delegated output must s
    - declare its gateway-verified model route and required env keys before launch
    - prefer verified `:free` model routes by default; escalate to paid lanes only when the task actually needs it
    - when Literbike or an equivalent host wrapper exists, prefer it over stale client-side model catalogs
+   - if the delegated work crosses repo or ownership boundaries, require the worker to restate the ownership map and refuse new duplicate implementations
    - forbid it from mutating truth artifacts (`plan.md`, `tracks.md`, TODOs, status docs) unless this invocation is explicitly about conductor/project-state maintenance
    - require it to stop after one slice and rendezvous on artifacts instead of broad completion claims
 
@@ -144,6 +154,7 @@ If any of the above is required, the TODO is not `100%` for this invocation.
      2. focused tests
      3. smoke/artifacts
      4. plan/status/checklist truth
+   - If the slice touched a duplicated concept, verify the result strengthens the declared canonical home or shrinks the migration shell. If it grows both, treat that as drift and do not mark complete.
 5. If validation passes, mark the TODO `[x]`.
 6. If blocked or partially complete:
    - Keep TODO `[~]` only if work is genuinely in progress and resumable this session.

@@ -31,6 +31,8 @@ CLOSING AGENT RECONCILIATION (hostile):
 | Free-Lane Default | Use verified `:free` routes first for delegated workers unless paid capacity is explicitly required. |
 | Host Wrapper | Prefer Literbike/OpenAI-compatible host wrappers for agent execution when available. |
 | Env Contract | Declare required API keys up front; missing env is a blocker, not a guess. |
+| Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
+| Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
 | Truth-Artifact Ownership | Only closing agent writes plan.md, tracks.md, status |
 | Reconciliation Order | 1) Runtime, 2) Tests, 3) Smoke/artifacts, 4) Truth docs |
 | History Hygiene | No branches/worktrees/sessions. Squash theatrical history. |
@@ -50,6 +52,24 @@ Workers are proposal engines, not truth authorities. Output must survive hostile
    - preferred gateway keys such as `KILO_API_KEY` or `KILOAI_API_KEY` for free gateway lanes
    - provider aliases when directly supported (`KIMI_API_KEY`, `ZAI_API_KEY`, etc.)
 5. Treat missing env, missing gateway route, or route/entitlement mismatch as concrete blockers.
+
+### Ownership and Overlap Resolution
+
+For any concept that appears in more than one repo or runtime surface, declare:
+
+1. **Canonical home**: where the concept should ultimately live
+2. **Host wrapper / adapter**: which surface may expose or route it without owning it
+3. **Compatibility shell**: which system exists temporarily for migration or regression parity
+4. **Duplicate surfaces**: where the same behavior currently exists and should stop expanding
+
+Decision rule:
+
+- stable, deterministic, hot-path logic belongs in its long-term home
+- wrappers expose but do not redefine
+- migration shells maintain parity but do not accumulate new semantics
+- deliberate parallel research must be labeled as such, or it is treated as drift
+
+If the ownership map is unclear, the next action is not “code more”; it is “name the owner and freeze the duplicates.”
 
 ---
 
