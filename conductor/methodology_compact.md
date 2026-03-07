@@ -33,6 +33,8 @@ CLOSING AGENT RECONCILIATION (hostile):
 | Env Contract | Declare required API keys up front; missing env is a blocker, not a guess. |
 | Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
 | Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
+| TODO Authority | `review` is the inspector for TODO truth; `implement` does not self-certify ambiguous completion. |
+| Early-Stop Rule | If work stops early, reopen to `[ ]` or leave `[~]` only with a concrete blocker note and resumable state. |
 | Truth-Artifact Ownership | Only closing agent writes plan.md, tracks.md, status |
 | Reconciliation Order | 1) Runtime, 2) Tests, 3) Smoke/artifacts, 4) Truth docs |
 | History Hygiene | No branches/worktrees/sessions. Squash theatrical history. |
@@ -70,6 +72,26 @@ Decision rule:
 - deliberate parallel research must be labeled as such, or it is treated as drift
 
 If the ownership map is unclear, the next action is not “code more”; it is “name the owner and freeze the duplicates.”
+
+### TODO Truth and Early Stops
+
+Conductor treats TODO state as an inspected claim, not a vibe.
+
+1. `implement` may advance code and validation, but it should not mark a TODO `[x]` if:
+   - the runtime path is still unproven
+   - validation is partial or indirect
+   - smoke/artifact evidence is missing where required
+   - a concrete blocker still exists
+2. `review` is the inspector of checked TODOs and early-stopped sessions.
+3. `status` should report suspicious states, not just progress counts.
+
+Inspector decision rule:
+
+- keep `[x]` only when evidence is defensible
+- reset to `[ ]` when completion was overstated
+- allow `[~]` only when a concrete blocker/resume note exists
+
+Early-stop damage is drift in plan state. The fix is not narrative; the fix is reopening the TODO or writing the blocker down explicitly.
 
 ---
 

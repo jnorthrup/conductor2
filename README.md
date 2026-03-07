@@ -87,6 +87,30 @@ If a concept already exists in more than one repo, the track should explicitly d
 
 If that decision is not made, Conductor treats the overlap as drift and requires the plan to capture it before more code is added.
 
+## TODO Authority
+
+Conductor should be the final word on TODO truth, especially when agents stop early or overclaim progress.
+
+Rules:
+
+- `implement` may move work forward, but it does not get to self-certify ambiguous completion.
+- `review` is the inspector for checked TODOs, resumable `[~]` items, and early-stop damage.
+- `status` should surface suspicious plan state instead of just counting boxes.
+
+A checked TODO is only true when the inspector can defend it with:
+
+- code in the intended runtime path
+- focused validation that actually passed
+- smoke/artifact evidence when the task requires it
+- no remaining blocker that would have stopped honest completion
+
+If a worker or session stops early, Conductor should prefer:
+
+- reopening the TODO to `[ ]`, or
+- leaving `[~]` only with a concrete blocker note and resumable state
+
+The system should never treat "some edits happened" as equivalent to "the TODO is done."
+
 ## Commands
 
 | Command | Purpose |

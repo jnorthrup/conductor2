@@ -14,6 +14,8 @@ Productivity rules:
 - When using Literbike or another OpenAI-compatible host wrapper, declare the required API-key env contract up front and prefer gateway keys (`KILO_API_KEY`, `KILOAI_API_KEY`) for free routed lanes when present.
 - For cross-repo work, declare the ownership map before coding: canonical home, host wrapper, compatibility shell, duplicate surfaces.
 - One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second sources of truth.
+- `review` is the inspector for TODO truth. `implement` should not self-certify ambiguous completion.
+- If work stops early, reset to `[ ]` or leave `[~]` only with a concrete blocker note and resumable state.
 - Prefer `100%` TODOs first, not broad `100%` buckets. Treat `100%` as a per-track execution contract tied to a declared bounded context for this invocation.
 - `100%` is a first-choice execution heuristic, not the only constraint: sequencing, dependencies, validation value, and user intent still apply.
 - Delegated/background workers are proposal engines only. They may not redefine project truth.
@@ -57,6 +59,8 @@ CLOSING AGENT RECONCILIATION (hostile):
 | Env Contract | Declare required API keys before launch; reconcile missing env as a concrete blocker. |
 | Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
 | Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
+| TODO Authority | `review` is the inspector for TODO truth; `implement` does not self-certify ambiguous completion. |
+| Early-Stop Rule | Reopen to `[ ]` or leave `[~]` only with concrete blocker/resume notes. |
 | Truth-Artifact Ownership | Only the closing agent may write to `plan.md`, `tracks.md`, status summaries. |
 | Reconciliation Order | 1) Runtime behavior, 2) Focused tests, 3) Smoke/artifacts, 4) Truth documents. |
 | History Hygiene | No branches/worktrees/sessions created by workers. Squash theatrical history. |
@@ -156,9 +160,12 @@ If any of the above is required, the TODO is not `100%` for this invocation.
      4. plan/status/checklist truth
    - If the slice touched a duplicated concept, verify the result strengthens the declared canonical home or shrinks the migration shell. If it grows both, treat that as drift and do not mark complete.
 5. If validation passes, mark the TODO `[x]`.
+   - Only do this when runtime behavior and required validation are actually defensible for the task.
+   - If completion still depends on unresolved runtime, smoke, artifact, or blocker questions, do not mark `[x]`.
 6. If blocked or partially complete:
    - Keep TODO `[~]` only if work is genuinely in progress and resumable this session.
-   - Otherwise reset it to `[ ]` and add a brief blocker note under a `## Notes` / `## Validation Notes` section in `plan.md`.
+   - `[~]` requires a brief blocker/resume note under `## Notes` / `## Validation Notes` in `plan.md`.
+   - Otherwise reset it to `[ ]` and record the blocker or missing evidence explicitly.
 
 Guidance:
 - Complete at least one meaningful task per invocation when feasible.
@@ -166,6 +173,7 @@ Guidance:
 - Prefer targeted commands (`rg`, focused tests) over broad scans.
 - If no pending task is `100%`, still deliver a cheaper next step by editing `plan.md` to create at least one explicit per-track `100%` subtask (with bounded context intent) or a concrete decision question.
 - If you identify a `100%` TODO, execute it now or explain why execution was impossible after a direct attempt. Re-partitioning without repo progress is not success.
+- Do not leave optimistic `[x]` or stale `[~]` state behind. Early-stop plan damage is a failure to clean up truth artifacts.
 
 ---
 
@@ -189,6 +197,7 @@ Return a concise execution summary with:
 - entropy events (new file reads outside context) and any re-estimates, if they occurred
 - delegated/background workers used (if any) and their bounded corpora
 - rendezvous artifacts received from delegated work (changed files, verification commands, actual results, remaining blocker)
+- TODO truth decision (`[x]`, `[~]` with blocker note, or reset to `[ ]`)
 - any `Decision Queue` / `Backlog` updates created this invocation
 - Files changed
 - Validation run + result

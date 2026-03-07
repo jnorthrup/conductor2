@@ -14,6 +14,8 @@
 | Env Contract | Declare required API keys before launch; missing env is a concrete blocker. |
 | Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
 | Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
+| TODO Authority | `review` is the inspector for checked TODOs and early-stop damage. |
+| Early-Stop Rule | Reopen to `[ ]` or leave `[~]` only with a concrete blocker note and resumable state. |
 | Truth-Artifact Ownership | Only closing agent writes plan.md, tracks.md, status |
 | Reconciliation Order | 1) Runtime, 2) Tests, 3) Smoke/artifacts, 4) Truth docs |
 | History Hygiene | No branches/worktrees/sessions. Squash theatrical history. |
@@ -47,6 +49,13 @@ Rules:
 - Migration shells preserve parity and buy time; they do not accumulate new semantics.
 - If the same idea appears in multiple repos, either consolidate ownership or explicitly label the overlap as temporary research.
 
+## TODO Truth and Early Stops
+
+- A checked TODO is an inspected claim, not just evidence that edits happened.
+- `implement` may move code forward, but `review` is the inspector of TODO truth.
+- If a session stops early, reset the TODO to `[ ]` unless there is a concrete blocker note and clean resumable state.
+- `status` should call out suspicious plan states, including checked TODOs without defensible evidence and `[~]` items with no blocker note.
+
 ## Guiding Principles
 
 1. **The Plan is the Source of Truth:** All work must be tracked in `plan.md`
@@ -57,6 +66,7 @@ Rules:
 6. **Non-Interactive & CI-Aware:** Prefer non-interactive commands. Use `CI=true` for watch-mode tools (tests, linters) to ensure single execution.
 7. **Delegated Workers Are Proposers, Not Arbiters:** Background or delegated agents may produce candidate changes, but only the closing agent may advance plan/status truth after reconciling runtime behavior, tests, smoke/artifacts, and remaining blockers.
 8. **One Home Per Concept:** Cross-repo work must declare where a concept lives, which surface only wraps it, and which system is temporary migration scaffolding.
+9. **TODO Truth Requires Inspection:** `review` has the final word on whether `[x]` stays checked, is reopened, or becomes `[~]` with a blocker note.
 
 ## Task Workflow
 

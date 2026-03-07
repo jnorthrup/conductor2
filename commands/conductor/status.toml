@@ -23,6 +23,7 @@ If a required file is missing, report exactly what is missing and what can still
    - completed `[x]`
    - in-progress `[~]`
    - pending `[ ]`
+   - note whether completed items appear to include evidence markers when the repo style uses them
 3. Detect likely current work:
    - track marked `[~]`, or
    - first non-complete track in `tracks.md`
@@ -31,6 +32,9 @@ If a required file is missing, report exactly what is missing and what can still
    - track marked `[~]` but no pending tasks remain
    - track directory exists but is missing `plan.md` / `metadata.json`
    - `metadata.json` status disagrees with `tracks.md`
+   - checked `[x]` items that appear to have no evidence marker in a plan style that records them
+   - `[~]` items with no nearby blocker/resume note
+   - tracks with too many `[~]` items relative to completed work (likely early-stop churn)
 
 ---
 
@@ -41,6 +45,7 @@ Produce a concise report with:
 - Track-by-track snapshot (status + task counts when available)
 - Current active track (best effort)
 - Next recommended action (usually `conductor implement` on the next incomplete track)
+- TODO truth / early-stop warnings
 - Warnings / inconsistencies (if any)
 
 Prefer concrete file references when calling out issues.
