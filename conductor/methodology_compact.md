@@ -27,11 +27,7 @@ CLOSING AGENT RECONCILIATION (hostile):
 | Bounded Corpus | Exact files/dirs. No subsystem discovery. |
 | Stop Condition | One slice or first concrete blocker. |
 | Rendezvous Payload | changed files, verification command, result, blocker |
-| Model Truth | Gateway `/models`, `/providers`, `/models-by-provider` is authoritative; client catalogs are hints. |
-| Free-Lane Default | Use verified `:free` routes first for delegated workers unless paid capacity is explicitly required. |
-| Model Authority | Conductor does not rank or pin models; humans choose them through the menu/host wrapper. |
-| Host Wrapper | Prefer Literbike/OpenAI-compatible host wrappers for agent execution when available. |
-| Env Contract | Use the human-selected route plus its declared env contract; missing env is a blocker, not a guess. |
+| Runtime Selection | External/operator-controlled. Workers consume the supplied runtime only and do not choose or optimize it. |
 | Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
 | Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
 | TODO Authority | `review` is the inspector for TODO truth; `implement` does not self-certify ambiguous completion. |
@@ -43,16 +39,12 @@ CLOSING AGENT RECONCILIATION (hostile):
 
 Workers are proposal engines, not truth authorities. Output must survive hostile reconciliation before plan advancement.
 
-### Gateway-First Worker Routing
+### External Runtime Contract
 
-1. Discover delegated-worker models from the live gateway surface first:
-   - `/models`
-   - `/providers`
-   - `/models-by-provider`
-2. Humans choose the active model/route through the menu or host wrapper; Conductor does not encode rankings or provider preferences.
-3. Launch workers through the host wrapper when available (for example Literbike/OpenAI-compatible routing) instead of trusting stale client-side model caches.
-4. Declare the selected route and env contract before launch.
-5. Treat missing env, missing gateway route, or route/entitlement mismatch as concrete blockers.
+1. Conductor does not choose the runtime for delegated workers.
+2. Humans or surrounding runtime surfaces choose it outside Conductor.
+3. Workers consume the supplied runtime only.
+4. If the supplied runtime is missing, broken, or mismatched, stop with a concrete blocker instead of guessing.
 
 ### Ownership and Overlap Resolution
 

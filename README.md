@@ -60,16 +60,13 @@ This release tightens that loop with smaller command prompts and lightweight run
 
 For async/background agent use, Conductor treats the repo plan as the rendezvous point. Delegated workers should return bounded artifacts only (changed files, verification run, actual failures/blockers), while the primary agent remains responsible for reconciling truth, updating plans, and squashing theatrical intermediate history.
 
-## Model Authority
+## External Runtime Selection
 
-Conductor does not make model decisions.
+Conductor does not choose, rank, or optimize model/runtime selection.
 
-Humans stay on top of model choice through the menu or host wrapper. Conductor only requires that:
+That is external operator territory. Workers may only consume the runtime already supplied by the surrounding menu, host wrapper, or shell environment.
 
-- the selected route is declared before delegated work starts
-- the required env contract is declared before launch
-- workers consume the chosen route instead of inventing their own
-- missing env or route mismatch is treated as a blocker
+If the runtime is missing, broken, or mismatched, that is a blocker. Conductor does not try to guess a better one.
 
 ## Concept Drift Control
 

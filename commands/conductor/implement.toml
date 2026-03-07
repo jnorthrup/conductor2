@@ -9,10 +9,9 @@ Productivity rules:
 - Do not pause for confirmation when the requested track is an exact match.
 - In a dirty repo, never revert unrelated changes.
 - Validate changes with focused checks/tests before marking tasks complete.
-- For delegated/background workers, prefer gateway-verified `:free` model lanes first unless the task explicitly requires paid capacity.
-- Treat client-side model catalogs as hints only. Gateway discovery (`/models`, `/providers`, `/models-by-provider`) is the source of truth for model availability.
-- Conductor does not rank, pin, or select models. Humans stay on top of model choice through the menu or host wrapper.
-- When using Literbike or another host wrapper, require the delegated worker to consume the human-selected route and declared env contract rather than inventing one.
+- Conductor does not choose runtimes for delegated/background workers.
+- Humans or surrounding runtime surfaces stay on top of runtime choice outside Conductor.
+- Delegated workers must consume the supplied runtime only; if it is missing or broken, stop with a blocker instead of guessing.
 - For cross-repo work, declare the ownership map before coding: canonical home, host wrapper, compatibility shell, duplicate surfaces.
 - One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second sources of truth.
 - `review` is the inspector for TODO truth. `implement` should not self-certify ambiguous completion.
@@ -33,9 +32,8 @@ DELEGATED WORKER LAUNCH:
   WORKER_LIMITS=2
   BOUNDED_CORPUS="<exact files/dirs>"
   STOP_CONDITION="one slice or first blocker"
-  MODEL_DISCOVERY="gateway-first (/models, /providers, /models-by-provider)"
-  MODEL_ROUTE="<provider/model:free or exact verified route>"
-  ENV_CONTRACT="[required API keys exported in host env]"
+  RUNTIME_ROUTE="<external/operator-supplied runtime>"
+  RUNTIME_BLOCKER="missing or broken runtime stops the worker"
 
 WORKER RETURNS (required):
   - changed files: [<list>]
@@ -54,11 +52,7 @@ CLOSING AGENT RECONCILIATION (hostile):
 |---------|------|
 | Worker Limits | Max 2 concurrent delegated workers. Each must declare bounded corpus before launch. |
 | Rendezvous Payload | Required: `changed files`, `verification commands run`, `actual result`, `remaining blocker`. |
-| Model Truth | Gateway discovery is authoritative. Client-side model lists are only hints. |
-| Free-Lane Default | Prefer verified `:free` routes for delegated workers unless the slice explicitly requires paid capacity. |
-| Model Authority | Conductor does not rank or pin models; humans choose them through the menu/host wrapper. |
-| Host Wrapper | Prefer Literbike/OpenAI-compatible host wrappers for worker execution when available. |
-| Env Contract | Use the human-selected route plus its declared env contract; missing env is a concrete blocker. |
+| Runtime Selection | External/operator-controlled. Workers consume the supplied runtime only and do not choose or optimize it. |
 | Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
 | Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
 | TODO Authority | `review` is the inspector for TODO truth; `implement` does not self-certify ambiguous completion. |
@@ -121,9 +115,7 @@ Workers are proposal engines, not truth authorities. All delegated output must s
    - split/re-scope into a new task block if needed
 7. If you invoke or coordinate any delegated/background worker:
    - declare its bounded corpus separately
-   - declare its gateway-verified model route and required env keys before launch
-   - prefer verified `:free` model routes by default; escalate to paid lanes only when the task actually needs it
-   - when Literbike or an equivalent host wrapper exists, prefer it over stale client-side model catalogs
+   - declare the supplied runtime before launch
    - if the delegated work crosses repo or ownership boundaries, require the worker to restate the ownership map and refuse new duplicate implementations
    - forbid it from mutating truth artifacts (`plan.md`, `tracks.md`, TODOs, status docs) unless this invocation is explicitly about conductor/project-state maintenance
    - require it to stop after one slice and rendezvous on artifacts instead of broad completion claims

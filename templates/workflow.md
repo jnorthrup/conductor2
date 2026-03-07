@@ -8,11 +8,7 @@
 | Bounded Corpus | Exact files/dirs. No subsystem discovery. |
 | Stop Condition | One slice or first concrete blocker. |
 | Rendezvous Payload | changed files, verification command, result, blocker |
-| Model Truth | Gateway discovery is authoritative; client-side model lists are only hints. |
-| Free-Lane Default | Prefer verified `:free` routes for delegated workers unless paid capacity is required. |
-| Model Authority | Conductor does not rank or pin models; humans choose them through the menu/host wrapper. |
-| Host Wrapper | Prefer Literbike/OpenAI-compatible host wrappers for worker execution when available. |
-| Env Contract | Use the human-selected route plus its declared env contract; missing env is a concrete blocker. |
+| Runtime Selection | External/operator-controlled. Workers consume the supplied runtime only and do not choose or optimize it. |
 | Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
 | Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
 | TODO Authority | `review` is the inspector for checked TODOs and early-stop damage. |
@@ -24,15 +20,14 @@
 
 Workers are proposal engines, not truth authorities. Output must survive hostile reconciliation before plan advancement.
 
-## Gateway-First Routing
+## External Runtime Selection
 
-When a delegated worker needs a model:
+When a delegated worker needs runtime access:
 
-1. Discover routes from the live gateway first (`/models`, `/providers`, `/models-by-provider`).
-2. Humans choose the active model/route through the menu or host wrapper; Conductor does not encode rankings or provider preferences.
-3. Prefer Literbike/OpenAI-compatible host wrappers over stale client-side catalogs when available.
-4. Declare the selected route and env contract before launch.
-5. Treat missing env or route mismatch as blockers, not as excuses to guess.
+1. Conductor does not choose it.
+2. Humans or surrounding runtime surfaces choose it outside Conductor.
+3. Workers consume the supplied runtime only.
+4. Treat missing or broken runtime as a blocker, not as an excuse to guess.
 
 ## Ownership and Overlap
 
