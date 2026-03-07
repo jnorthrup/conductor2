@@ -60,6 +60,21 @@ This release tightens that loop with smaller command prompts and lightweight run
 
 For async/background agent use, Conductor treats the repo plan as the rendezvous point. Delegated workers should return bounded artifacts only (changed files, verification run, actual failures/blockers), while the primary agent remains responsible for reconciling truth, updating plans, and squashing theatrical intermediate history.
 
+## Preferred Coding Lanes
+
+Conductor now assumes gateway-first worker routing with an explicit coding-model order when the user has not pinned a model already:
+
+1. `nvidia/z-ai/glm5`
+2. `nvidia/moonshotai/kimi-k2.5`
+3. `kilo/minimax/minimax-m2.5:free`
+
+Rules:
+
+- direct `nvidia/*` routes require `NVIDIA_API_KEY`
+- `kilo/*` and free gateway lanes require `KILO_API_KEY` (or `KILOAI_API_KEY` where appropriate)
+- gateway discovery (`/models`, `/providers`, `/models-by-provider`) is authoritative; client-side model lists are hints
+- do not default to `qwen3-next`, `nemotron`, or similar NVIDIA enterprise baby models for coding work
+
 ## Concept Drift Control
 
 Conductor assumes conceptual drift is mostly an ownership problem, not a prompt problem.

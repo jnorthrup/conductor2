@@ -29,6 +29,8 @@ CLOSING AGENT RECONCILIATION (hostile):
 | Rendezvous Payload | changed files, verification command, result, blocker |
 | Model Truth | Gateway `/models`, `/providers`, `/models-by-provider` is authoritative; client catalogs are hints. |
 | Free-Lane Default | Use verified `:free` routes first for delegated workers unless paid capacity is explicitly required. |
+| Coding Lane Order | Default coding lanes: `nvidia/z-ai/glm5` -> `nvidia/moonshotai/kimi-k2.5` -> `kilo/minimax/minimax-m2.5:free`. |
+| Avoid List | Do not default to `qwen3-next`, `nemotron`, or similar NVIDIA enterprise baby models for coding. |
 | Host Wrapper | Prefer Literbike/OpenAI-compatible host wrappers for agent execution when available. |
 | Env Contract | Declare required API keys up front; missing env is a blocker, not a guess. |
 | Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
@@ -48,12 +50,17 @@ Workers are proposal engines, not truth authorities. Output must survive hostile
    - `/models`
    - `/providers`
    - `/models-by-provider`
-2. Choose a verified `provider/model:free` lane by default.
-3. Launch workers through the host wrapper when available (for example Literbike/OpenAI-compatible routing) instead of trusting stale client-side model caches.
-4. Declare the env contract before launch:
-   - preferred gateway keys such as `KILO_API_KEY` or `KILOAI_API_KEY` for free gateway lanes
+2. For coding/implementation work, prefer this order unless the user overrides it:
+   - `nvidia/z-ai/glm5`
+   - `nvidia/moonshotai/kimi-k2.5`
+   - `kilo/minimax/minimax-m2.5:free`
+3. Avoid `qwen3-next`, `nemotron`, and similar NVIDIA enterprise baby models as default coding lanes.
+4. Launch workers through the host wrapper when available (for example Literbike/OpenAI-compatible routing) instead of trusting stale client-side model caches.
+5. Declare the env contract before launch:
+   - `NVIDIA_API_KEY` for direct `nvidia/*` routes
+   - gateway keys such as `KILO_API_KEY` or `KILOAI_API_KEY` for `kilo/*` and free gateway lanes
    - provider aliases when directly supported (`KIMI_API_KEY`, `ZAI_API_KEY`, etc.)
-5. Treat missing env, missing gateway route, or route/entitlement mismatch as concrete blockers.
+6. Treat missing env, missing gateway route, or route/entitlement mismatch as concrete blockers.
 
 ### Ownership and Overlap Resolution
 
