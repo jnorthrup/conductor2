@@ -22,6 +22,10 @@ Productivity rules:
 - Conductor does not choose runtimes for delegated/background workers.
 - Humans or surrounding runtime surfaces stay on top of runtime and adapter choice outside Conductor.
 - Delegated workers must consume the supplied runtime only; if it is missing or broken, stop with a blocker instead of guessing.
+- If delegated/background workers are used, the agent must emit the exact launch scaffold in the user-visible transcript before delegation begins.
+- The scaffold must include `DELEGATED WORKER LAUNCH`, `WORKER_LIMITS`, `BOUNDED_CORPUS`, `STOP_CONDITION`, `RUNTIME_ROUTE`, and one `Worker X:` line per active worker.
+- Do not paraphrase, omit, or delay the launch scaffold fields.
+- If no delegation is used, say `DELEGATION=none` explicitly instead of implying hidden delegation.
 - For cross-repo work, declare the ownership map before coding: canonical home, host wrapper, compatibility shell, duplicate surfaces.
 - One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second sources of truth.
 - `review` is the inspector for TODO truth. `implement` should not self-certify ambiguous completion.
@@ -45,6 +49,8 @@ DELEGATED WORKER LAUNCH:
   STOP_CONDITION="one slice or first blocker"
   RUNTIME_ROUTE="<host-resolved and confirmed runtime surface>"
   RUNTIME_BLOCKER="missing or broken runtime stops the worker"
+  Worker A: "<bounded corpus + one slice>"
+  Worker B: "<bounded corpus + one slice>"  # omit if unused
 
 WORKER RETURNS (required):
   - changed files: [<list>]
@@ -62,6 +68,7 @@ CLOSING AGENT RECONCILIATION (hostile):
 | Concept | Rule |
 |---------|------|
 | Worker Limits | Max 2 concurrent delegated workers. Each must declare bounded corpus before launch. |
+| Launch Transcript | The exact launch scaffold must be printed in-thread before delegation starts. Withheld or post-hoc launch blocks are invalid. |
 | Rendezvous Payload | Required: `changed files`, `verification commands run`, `actual result`, `remaining blocker`. |
 | Runtime Selection | Host-surface controlled. The host resolves and confirms the adapter/runtime surface first; workers consume the supplied runtime only and do not choose or optimize it. |
 | Project Truth | Only the target repo's local `conductor/` tree is authoritative for project state. |
@@ -126,6 +133,7 @@ Workers are bounded executors, not truth authorities. All delegated output must 
    - re-evaluate whether the active task remains `100%`
    - split/re-scope into a new task block if needed
 7. If you invoke or coordinate any delegated/background worker:
+   - emit the exact user-visible `DELEGATED WORKER LAUNCH` scaffold before the worker starts
    - declare its bounded corpus separately
    - declare the supplied runtime before launch
    - if the delegated work crosses repo or ownership boundaries, require the worker to restate the ownership map and refuse new duplicate implementations
@@ -199,6 +207,7 @@ Return a concise execution summary with:
 - Track selected (`track_id`)
 - TODO(s) completed / in progress
 - declared task block + bounded context
+- exact launch scaffold emitted for delegated work, or `DELEGATION=none`
 - `100%` slice executed (or why none existed within that context)
 - entropy events (new file reads outside context) and any re-estimates, if they occurred
 - delegated/background workers used (if any) and their bounded corpora

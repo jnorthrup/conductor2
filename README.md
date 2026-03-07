@@ -31,6 +31,13 @@ Runtime handoff:
 - `skill/scripts/run-conductor.sh <command>` prefers an installed `conductor` CLI when one is available.
 - Otherwise it resolves the highest-priority supported local agent surface, then prints the selected surface, the command TOML path, and the cache file used for adapter discovery.
 
+Delegation transcript contract:
+
+- If delegation is used, print the launch scaffold in-thread before the delegated work starts.
+- The scaffold is literal, not approximate: `DELEGATED WORKER LAUNCH`, `WORKER_LIMITS`, `BOUNDED_CORPUS`, `STOP_CONDITION`, `RUNTIME_ROUTE`, then one `Worker X:` line per active worker.
+- Hidden delegation and post-hoc launch narration are invalid.
+- If no delegation is used, state `DELEGATION=none` explicitly.
+
 Behavior rules across tools:
 
 - Use the target repo's local `/conductor/` directory as project truth.
