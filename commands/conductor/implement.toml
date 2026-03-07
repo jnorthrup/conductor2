@@ -12,8 +12,15 @@ Productivity rules:
 - Project truth lives only in the target repo's local `conductor/` directory.
 - Do not treat `conductor2`, home installs, caches, or sibling repos as active truth artifacts.
 - Stay in closure mode: keep going until working, tested, and committed, or a concrete external blocker is proven.
+- Incomplete tracks or incomplete projects are not blockers by themselves; continue until a concrete slice is closed or a real external blocker is proven.
+- Codex, Claude Code, OpenCode, and Antigravity should treat Conductor as an installed skill/context surface, not as an invitation to generate new Conductor wrappers.
+- Gemini CLI uses the extension surface (`gemini-extension.json` + `SKILL.md`); Antigravity is a plain skill surface and must not be treated as Gemini CLI.
+- Unless the task explicitly targets Conductor itself, do not create or rewrite Conductor scripts, installers, prompt files, or command TOMLs in the target repo.
+- Prefer existing Conductor surfaces (`commands/conductor/*.toml`, installed `SKILL.md`, `templates/workflow.md`, `skill/scripts/run-conductor.sh`) over alternate automation.
+- `implement` is the entry intent for the implementation agent flow, not a hardcoded vendor CLI command.
+- The surrounding runtime surface must discover the available agent/tool surface locally, select the highest-priority supported adapter, and confirm the resolved surface before proceeding.
 - Conductor does not choose runtimes for delegated/background workers.
-- Humans or surrounding runtime surfaces stay on top of runtime choice outside Conductor.
+- Humans or surrounding runtime surfaces stay on top of runtime and adapter choice outside Conductor.
 - Delegated workers must consume the supplied runtime only; if it is missing or broken, stop with a blocker instead of guessing.
 - For cross-repo work, declare the ownership map before coding: canonical home, host wrapper, compatibility shell, duplicate surfaces.
 - One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second sources of truth.
@@ -26,6 +33,7 @@ Productivity rules:
 - If you use a delegated/background worker, require a rendezvous payload: changed files, verification commands run, actual result, and remaining blocker.
 - Treat delegated output skeptically. Review runtime behavior first, then focused tests, then smoke/artifacts, and only then summaries or checklist changes.
 - Prefer hostile reconciliation over trusting green tests at face value when delegated workers touched tests, smoke scripts, or documentation.
+- Do not stop merely because a selected track or the overall project remains incomplete; incompleteness is expected until the current slice is actually closed or a concrete external blocker is proven.
 
 If a tool call fails, report the failure and either recover or stop with a concrete blocker.
 
@@ -35,7 +43,7 @@ DELEGATED WORKER LAUNCH:
   WORKER_LIMITS=2
   BOUNDED_CORPUS="<exact files/dirs>"
   STOP_CONDITION="one slice or first blocker"
-  RUNTIME_ROUTE="<external/operator-supplied runtime>"
+  RUNTIME_ROUTE="<host-resolved and confirmed runtime surface>"
   RUNTIME_BLOCKER="missing or broken runtime stops the worker"
 
 WORKER RETURNS (required):
@@ -55,7 +63,7 @@ CLOSING AGENT RECONCILIATION (hostile):
 |---------|------|
 | Worker Limits | Max 2 concurrent delegated workers. Each must declare bounded corpus before launch. |
 | Rendezvous Payload | Required: `changed files`, `verification commands run`, `actual result`, `remaining blocker`. |
-| Runtime Selection | External/operator-controlled. Workers consume the supplied runtime only and do not choose or optimize it. |
+| Runtime Selection | Host-surface controlled. The host resolves and confirms the adapter/runtime surface first; workers consume the supplied runtime only and do not choose or optimize it. |
 | Project Truth | Only the target repo's local `conductor/` tree is authoritative for project state. |
 | Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
 | Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |

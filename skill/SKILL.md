@@ -18,11 +18,22 @@ This file is the canonical doctrine in `conductor2`.
 - `conductor2` itself is not the active project state.
 - Home-directory installs, caches, and sibling repos are not truth artifacts.
 
+## Agent Surface Rules
+
+- Codex, Claude Code, OpenCode, and Antigravity consume Conductor as a plain skill/context surface.
+- Gemini CLI consumes Conductor through the extension surface (`SKILL.md` plus `gemini-extension.json`).
+- Antigravity is not Gemini CLI; do not assume Gemini-specific slash-command or extension behavior there.
+- Unless the task explicitly targets Conductor itself, do not create or rewrite Conductor's own scripts, wrappers, installers, or command TOMLs in the target repo.
+- Prefer the existing surfaces (`skill/SKILL.md`, `commands/conductor/*.toml`, `templates/workflow.md`, `skill/scripts/run-conductor.sh`) over inventing alternate Conductor automation.
+- In product repos, work on product code plus the repo's local `/conductor/` artifacts, not on copied Conductor machinery.
+
 ## Closure Mode
 
 - Build until the slice is working, tested, and committed.
 - Do not stop for plans, options, status narration, or partial TODO cleanup.
 - Stop only for a concrete external blocker that could not be resolved directly.
+- Incomplete tracks or incomplete projects are not blockers; continue until a concrete slice is closed or a real external blocker is proven.
+- Streamline the user's time: rediscover most context from the repo in-context during execution rather than front-loading brittle questionnaires.
 
 ## Worker Protocol
 
