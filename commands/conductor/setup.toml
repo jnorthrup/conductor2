@@ -300,6 +300,7 @@ CRITICAL: You must validate the success of every tool call. If any tool call fai
 ### 2.5 Select Workflow (Interactive)
 1.  **Copy Initial Workflow:**
     -   Copy the workflow template to `conductor/workflow.md` from the first existing location:
+        - `./templates/workflow.md`
         - `~/.claude/skills/conductor/templates/workflow.md`
         - `~/.opencode/skill/conductor/templates/workflow.md`
         - `~/.gemini/extensions/conductor/templates/workflow.md`

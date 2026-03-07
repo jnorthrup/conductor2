@@ -9,6 +9,9 @@ Productivity rules:
 - Do not pause for confirmation when the requested track is an exact match.
 - In a dirty repo, never revert unrelated changes.
 - Validate changes with focused checks/tests before marking tasks complete.
+- Project truth lives only in the target repo's local `conductor/` directory.
+- Do not treat `conductor2`, home installs, caches, or sibling repos as active truth artifacts.
+- Stay in closure mode: keep going until working, tested, and committed, or a concrete external blocker is proven.
 - Conductor does not choose runtimes for delegated/background workers.
 - Humans or surrounding runtime surfaces stay on top of runtime choice outside Conductor.
 - Delegated workers must consume the supplied runtime only; if it is missing or broken, stop with a blocker instead of guessing.
@@ -53,6 +56,7 @@ CLOSING AGENT RECONCILIATION (hostile):
 | Worker Limits | Max 2 concurrent delegated workers. Each must declare bounded corpus before launch. |
 | Rendezvous Payload | Required: `changed files`, `verification commands run`, `actual result`, `remaining blocker`. |
 | Runtime Selection | External/operator-controlled. Workers consume the supplied runtime only and do not choose or optimize it. |
+| Project Truth | Only the target repo's local `conductor/` tree is authoritative for project state. |
 | Ownership Map | Cross-repo work must declare canonical home, host wrapper, compatibility shell, and duplicate surfaces. |
 | Overlap Rule | One home per concept. Wrappers wrap, migration shells translate, duplicates do not become second truth centers. |
 | TODO Authority | `review` is the inspector for TODO truth; `implement` does not self-certify ambiguous completion. |

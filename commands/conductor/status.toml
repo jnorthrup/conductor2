@@ -10,6 +10,7 @@ If a required file is missing, report exactly what is missing and what can still
 ## 1. Discover Conductor State
 1. Check for `conductor/tracks.md`.
    - If missing, stop and say conductor is not initialized (or tracks file is missing/corrupt).
+   - Do not substitute `conductor2`, hidden installs, or caches for the local repo state.
 2. Read `conductor/tracks.md`.
 3. List directories under `conductor/tracks/` (if the folder exists).
 4. For each track directory, read `metadata.json` and `plan.md` if present.

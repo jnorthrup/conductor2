@@ -10,12 +10,10 @@ install() {
     echo "  $TARGET"
     rm -rf "$TARGET" && mkdir -p "$TARGET"
     if [[ "$TYPE" == "gemini" ]]; then
-        cp "$ROOT/GEMINI.md" "$TARGET/"
+        cp "$ROOT/skill/SKILL.md" "$TARGET/SKILL.md"
         cp "$ROOT/gemini-extension.json" "$TARGET/"
     else
         cp "$ROOT/skill/SKILL.md" "$TARGET/"
-        cp "$ROOT/skill/methodology_compact.md" "$TARGET/methodology_compact.md"
-        cp "$ROOT/skill/methodology_compact.md" "$TARGET/methodology.md"
     fi
     ln -s "$ROOT/commands" "$TARGET/commands"
     ln -s "$ROOT/templates" "$TARGET/templates"
@@ -31,4 +29,4 @@ install "$HOME/.gemini/extensions/conductor" gemini
 install "$HOME/.gemini/antigravity/skills/conductor" skill
 
 # Final user message
-echo "Done – restart your AI shell."
+echo "Done - restart your AI shell."
