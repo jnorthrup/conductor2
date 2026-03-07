@@ -18,8 +18,6 @@ install_skill_flavor() {
   rm -rf "$dir"
   mkdir -p "$dir"
   cp "$ROOT/skill/SKILL.md" "$dir/"
-  ln -s "$ROOT/commands" "$dir/commands"
-  ln -s "$ROOT/templates" "$dir/templates"
   echo "  $dir"
 }
 
@@ -27,13 +25,11 @@ for dir in "$HOME/.opencode/skill/conductor" "$HOME/.claude/skills/conductor" "$
   install_skill_flavor "$dir"
 done
 
- dir="$HOME/.gemini/extensions/conductor"
+dir="$HOME/.gemini/extensions/conductor"
 rm -rf "$dir"
 mkdir -p "$dir"
 cp "$ROOT/skill/SKILL.md" "$dir/SKILL.md"
 cp "$ROOT/gemini-extension.json" "$dir/"
-ln -s "$ROOT/commands" "$dir/commands"
-ln -s "$ROOT/templates" "$dir/templates"
 echo "  $dir (Gemini CLI)"
 
 dir="$HOME/.gemini/antigravity/skills/conductor"

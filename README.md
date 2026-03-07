@@ -1,56 +1,40 @@
 # conductor2
 
-Compact Conductor distribution.
+Single-file Conductor skill distribution.
 
 This repo is the method, not the active project state.
 
 Canonical installer: `install.sh`
 - Run it from the repo where you want Conductor available, or from any working directory outside this source tree.
-- Compatibility entrypoints (`install_en.sh`, `skill/scripts/install.sh`) delegate to the root installer rather than carrying separate installer logic.
 
-- Canonical doctrine lives in `skill/SKILL.md`.
-- Project truth lives only in the target repo's local `/conductor/` directory.
-- `conductor2` does not own model/runtime choice.
-- `implement` is an agent entry intent, not a hardcoded CLI executor.
-- Delegated workers are bounded executors; `review` owns TODO truth.
+Required contract surface:
+
+- [`skill/SKILL.md`](/Users/jim/work/conductor2/skill/SKILL.md) is the only required Conductor contract.
+- Plain skill hosts should work from `SKILL.md` alone.
+- Gemini CLI still needs [`gemini-extension.json`](/Users/jim/work/conductor2/gemini-extension.json) as host metadata, but that file is not doctrine.
 
 Supported surfaces:
 
-- Codex, Claude Code, and OpenCode install Conductor as a plain skill.
-- Gemini CLI installs Conductor as an extension surface using `gemini-extension.json`.
-- Antigravity installs Conductor as a plain skill under the Google toolchain, not as a Gemini CLI extension.
+- Codex, Claude Code, OpenCode, and Antigravity install Conductor as a plain single-file skill.
+- Gemini CLI installs `SKILL.md` plus `gemini-extension.json`.
 
 Install layout:
 
-- Plain skill surfaces (Codex, Claude Code, OpenCode, Antigravity) receive `SKILL.md` plus symlinks to `commands/` and `templates/`.
-- Gemini CLI receives the same layout plus `gemini-extension.json`.
+- Plain skill surfaces receive `SKILL.md` only.
+- Gemini CLI receives `SKILL.md` plus `gemini-extension.json` only.
 - The installer deliberately avoids copying repo metadata such as `README.md`, `LICENSE`, or release files into client installs.
 
-Runtime handoff:
+Contract summary:
 
-- `skill/scripts/run-conductor.sh <command>` prefers an installed `conductor` CLI when one is available.
-- Otherwise it resolves the highest-priority supported local agent surface, then prints the selected surface, the command TOML path, and the cache file used for adapter discovery.
-
-Delegation transcript contract:
-
-- If delegation is used, print the launch scaffold in-thread before the delegated work starts.
-- The scaffold is literal, not approximate: `DELEGATED WORKER LAUNCH`, `WORKER_LIMITS`, `BOUNDED_CORPUS`, `STOP_CONDITION`, `RUNTIME_ROUTE`, then one `Worker X:` line per active worker.
-- Hidden delegation and post-hoc launch narration are invalid.
-- If no delegation is used, state `DELEGATION=none` explicitly.
-
-Behavior rules across tools:
-
-- Use the target repo's local `/conductor/` directory as project truth.
-- Resolve the available runtime/agent surface locally, confirm it, then launch the requested entry intent through that surface.
-- Do not invent repo-local Conductor scripts, wrappers, or cloned command files unless the task is to change Conductor itself.
-- Prefer the shipped command TOMLs, workflow template, and `skill/scripts/run-conductor.sh` over alternate automation.
-- Keep user-time overhead low: rediscover most repo context in-context during execution instead of front-loading brittle setup questionnaires.
-- Do not stop early merely because a track or project is still incomplete; keep executing bounded slices until one is closed or a concrete external blocker is proven.
+- Project truth lives only in the target repo's local `/conductor/` directory.
+- `conductor2` does not own model/runtime choice.
+- `implement` is a file-changing bounded slice, not no-op rediscovery.
+- `review` owns TODO truth.
+- Delegation is off by default and subordinate when explicitly allowed.
 
 Minimal surfaces kept on purpose:
 
 - `skill/SKILL.md`
-- `commands/conductor/*.toml`
-- `templates/workflow.md`
-- `skill/scripts/run-conductor.sh`
-- installers and adapters needed to wire those files into clients
+- `gemini-extension.json` for Gemini host metadata
+- installers that copy the skill into supported hosts
+- focused tests that verify the installed layout and single-file contract
