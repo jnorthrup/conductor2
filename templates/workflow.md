@@ -10,7 +10,7 @@
 | Rendezvous Payload | changed files, verification command, result, blocker |
 | Model Truth | Gateway discovery is authoritative; client-side model lists are only hints. |
 | Free-Lane Default | Prefer verified `:free` routes for delegated workers unless paid capacity is required. |
-| Coding Lane Order | Default coding lanes: `nvidia/z-ai/glm5` -> `nvidia/moonshotai/kimi-k2.5` -> `kilo/minimax/minimax-m2.5:free`. |
+| Coding Lane Policy | Choose a live gateway-visible, free or user-approved, coding-capable, env-backed lane; rerank each session. |
 | Avoid List | Do not default to `qwen3-next`, `nemotron`, or similar NVIDIA enterprise baby models for coding. |
 | Host Wrapper | Prefer Literbike/OpenAI-compatible host wrappers for worker execution when available. |
 | Env Contract | Declare required API keys before launch; missing env is a concrete blocker. |
@@ -30,16 +30,18 @@ Workers are proposal engines, not truth authorities. Output must survive hostile
 When a delegated worker needs a model:
 
 1. Discover routes from the live gateway first (`/models`, `/providers`, `/models-by-provider`).
-2. For coding/implementation work, prefer this order unless the user overrides it:
-   - `nvidia/z-ai/glm5`
-   - `nvidia/moonshotai/kimi-k2.5`
-   - `kilo/minimax/minimax-m2.5:free`
+2. For coding/implementation work, select by policy, not folklore:
+   - live in the current gateway/provider inventory
+   - free or explicitly user-approved
+   - coding-capable enough for the slice at hand
+   - env-backed right now
+   - responsive enough under a cheap probe
 3. Avoid `qwen3-next`, `nemotron`, and similar NVIDIA enterprise baby models as default coding lanes.
 4. Prefer Literbike/OpenAI-compatible host wrappers over stale client-side catalogs when available.
 5. Declare the required API-key env contract before launch:
    - `NVIDIA_API_KEY` for direct `nvidia/*` routes
    - `KILO_API_KEY` / `KILOAI_API_KEY` for `kilo/*` and gateway/free lanes
-6. Treat missing env or route mismatches as blockers, not as excuses to guess.
+6. Treat missing env, route mismatch, or deep queue/stall as blockers, then rerank.
 
 ## Ownership and Overlap
 
