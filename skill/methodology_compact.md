@@ -27,12 +27,29 @@ CLOSING AGENT RECONCILIATION (hostile):
 | Bounded Corpus | Exact files/dirs. No subsystem discovery. |
 | Stop Condition | One slice or first concrete blocker. |
 | Rendezvous Payload | changed files, verification command, result, blocker |
+| Model Truth | Gateway `/models`, `/providers`, `/models-by-provider` is authoritative; client catalogs are hints. |
+| Free-Lane Default | Use verified `:free` routes first for delegated workers unless paid capacity is explicitly required. |
+| Host Wrapper | Prefer Literbike/OpenAI-compatible host wrappers for agent execution when available. |
+| Env Contract | Declare required API keys up front; missing env is a blocker, not a guess. |
 | Truth-Artifact Ownership | Only closing agent writes plan.md, tracks.md, status |
 | Reconciliation Order | 1) Runtime, 2) Tests, 3) Smoke/artifacts, 4) Truth docs |
 | History Hygiene | No branches/worktrees/sessions. Squash theatrical history. |
 | Forbidden Moves | Workers cannot flip status, claim completion from tests alone, or touch truth artifacts. |
 
 Workers are proposal engines, not truth authorities. Output must survive hostile reconciliation before plan advancement.
+
+### Gateway-First Worker Routing
+
+1. Discover delegated-worker models from the live gateway surface first:
+   - `/models`
+   - `/providers`
+   - `/models-by-provider`
+2. Choose a verified `provider/model:free` lane by default.
+3. Launch workers through the host wrapper when available (for example Literbike/OpenAI-compatible routing) instead of trusting stale client-side model caches.
+4. Declare the env contract before launch:
+   - preferred gateway keys such as `KILO_API_KEY` or `KILOAI_API_KEY` for free gateway lanes
+   - provider aliases when directly supported (`KIMI_API_KEY`, `ZAI_API_KEY`, etc.)
+5. Treat missing env, missing gateway route, or route/entitlement mismatch as concrete blockers.
 
 ---
 
