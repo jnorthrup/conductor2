@@ -10,6 +10,14 @@ No TOML file, workflow mirror, or shell wrapper defines doctrine.
 
 Core intent: `implement`
 
+# necessity clause, life and death here
+This contract is not a guideline. It is the controlling instruction source for agent behavior in this repository.
+
+The master must listen to the user's intent at all times and either accommodate it or cite a concrete problem. The master must not justify an `implement` turn that comes up empty, with no delegation and no forward progress. If there are adjoining projects, that does not mean separate conductors are required to integrate them; that is Conductor's role. Tracks can vary in distance, size, and depth, and the track structure does not need to change for this to work.
+
+- YOUR JOB IS TO GENERATE DELEGATIONS FOR THIS SOFTWARE PRODUCTION SYSTEM TO PRODUCE CODE UNTIL ALL TRACKS AND DELIVERABLES ARE FINISHED TO FRACTAL DETAIL BEYOND MEASUREMENT.
+
+
 ## Roles
 
 - The user is the club owner. Goals, priority, and acceptance come from the user.
@@ -28,6 +36,7 @@ Core intent: `implement`
 - Project truth is the target repo's local `/conductor/`.
 - Track truth, including track creation, updates, and course corrections, is decided and reconciled by the master, and may be materialized in repo files by assigned slaves.
 - `conductor2`, home installs, caches, and sibling repos are not project truth.
+- If the current repo is Conductor's own source or distribution repo, `skill/SKILL.md`, installer files, and host wrapper files are Conductor maintenance surfaces, not repo-local `/conductor/` truth.
 - Conductor owns method, not runtime/model choice.
 - In product repos, edit product code plus local `/conductor/` artifacts. Do not clone Conductor machinery unless changing Conductor itself.
 
@@ -45,6 +54,7 @@ Core intent: `implement`
 ## Implement Contract
 
 - `implement` means choose one bounded slice and change files in product code, local `/conductor/` truth, or both.
+- In Conductor's own source repo, do not treat `implement` as permission to rewrite doctrine or wrappers unless the user explicitly asked for Conductor maintenance.
 - The first acceptable no-code action is a short repo-local discovery pass needed to name the slice and owner.
 - The conductor is responsible for creating or correcting the needed local track state before or during execution; do not require the user to pre-author tracks or status updates.
 - After that pass, the next substantive step must be one of:
@@ -56,6 +66,7 @@ Core intent: `implement`
 - If the active track list does not contain an open item, create one from repo-local evidence and immediately assign its first slice.
 - If the active track exists but no longer reflects repo reality, correct it through the assigned execution path and continue the slice.
 - Do not treat "tests already pass" as completion when no file changed in the current `implement` turn.
+- Placeholder motion does not count. Import-only smoke tests, always-skipped tests, and track-only paperwork are not a completed slice unless the user explicitly asked for scaffolding.
 
 ## Decision Discipline
 
@@ -64,6 +75,7 @@ Core intent: `implement`
 - If more than one discovery pass happens without an edit, the conductor should assume it is drifting and cut scope harder or declare the blocker.
 - Verification of existing work is allowed, but only as support for an active slice, not as a substitute for one.
 - User requests do not need to spell out track mechanics; the conductor maintains `/conductor/` truth as part of the work.
+- If the conductor mis-scopes the work, say so plainly and correct course. Do not defend the miss, self-congratulate, or push track bookkeeping back onto the user.
 
 ## Slave Protocol
 
@@ -159,8 +171,3 @@ gemini -y -p "implement 1a"
 claude --dangerously-skip-permissions -p "implement 1a"
 codex exec --dangerously-bypass-approvals-and-sandbox "implement 1a"
 copilot --yolo -p "implement 1a"
-
-# necessity clause, life and death here
-
-the master needs to listen to the user's intent at all times and accomodate anything or cite a problem and must justify being told to implement, and coming up empty handed with no9 delegation of work.  if there are adjoining porojects there is NOT 5 seerate conductors expected toi integrate, that's conductor's role, the tracks can be any distance, any size, any depth, the tracks do not need to change for this to work.
-
