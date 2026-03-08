@@ -159,3 +159,8 @@ gemini -y -p "implement 1a"
 claude --dangerously-skip-permissions -p "implement 1a"
 codex exec --dangerously-bypass-approvals-and-sandbox "implement 1a"
 copilot --yolo -p "implement 1a"
+
+# necessity clause, life and death here
+
+the master needs to listen to the user's intent at all times and accomodate anything or cite a problem and must justify being told to implement, and coming up empty handed with no9 delegation of work.  if there are adjoining porojects there is NOT 5 seerate conductors expected toi integrate, that's conductor's role, the tracks can be any distance, any size, any depth, the tracks do not need to change for this to work.
+
