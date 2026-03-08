@@ -100,8 +100,10 @@ Master control loop:
 - While slaves are running, do not churn with frequent interim summaries, repeated status polls, or speculative re-planning.
 - Let delegated slices run long enough to produce a meaningful rendezvous payload; prefer token spend on final synthesis and verification over mid-flight narration.
 - Early-stop bias is not a reason to interrupt active delegated work. Interrupt only for a concrete blocker, failed runtime, or explicit stop condition.
-- If a delegated slice is aborted, superseded, or rerouted, explicitly terminate the old worker process before launching or accepting another worker on that slice.
-- Do not leave orphan delegate processes running after the master has rejected, replaced, or abandoned their slice.
+- Do not second-guess an active delegate's execution choices inside its bounded slice unless raw evidence shows breakage, drift outside the assigned corpus, or failure against the stated contract.
+- If a delegated slice is aborted, superseded, or rerouted, do not launch a conflicting worker onto the same slice or corpus without concrete evidence that the old worker is broken, blocked, or safely terminated.
+- Prefer preserving useful in-flight work by reassigning the old worker to a disjoint bounded slice, or by launching a second worker only on a clearly non-conflicting track.
+- Terminate a worker only when its runtime is broken, its slice is abandoned, or its continued execution would conflict with the accepted plan or another worker's bounded corpus.
 - Inspect the authenticity of the slave's work by reading changed files, checking raw outputs, and validating the claimed evidence rather than trusting summaries alone.
 - Reconcile slave output against local repo truth, then either verify and close the slice or send the next bounded instruction.
 - Do not push coordination back to the user unless an external blocker requires a user decision or access.
@@ -145,7 +147,7 @@ Authenticity rules:
 - Conductor does not choose models or runtimes.
 - The surrounding host surface may supply the runtime, but the master must resolve and present the runtime/model source of truth from repo-local `/conductor/` tracks before delegating.
 - Slaves consume only the supplied runtime route and task contract.
-- When a worker is aborted or rerouted, the host runtime surface must be told to terminate that worker rather than letting it continue in the background.
+- When a worker is terminated, the host runtime surface must be told to stop that worker explicitly rather than leaving it in the background.
 - Missing, ambiguous, or broken runtime is a blocker. Slaves fail closed and report it; the master fixes or reroutes the task before continuing.
 
 ## Ownership
