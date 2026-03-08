@@ -30,7 +30,7 @@ Contract summary:
 - `conductor2` does not own model/runtime choice.
 - `implement` is a file-changing bounded slice, not no-op rediscovery.
 - `review` owns TODO truth.
-- Delegation is off by default and subordinate when explicitly allowed.
+- Delegation is explicit and subordinate; the master routes runtime/model truth from local `/conductor/` tracks.
 
 Minimal surfaces kept on purpose:
 

@@ -13,13 +13,15 @@ Core intent: `implement`
 ## Roles
 
 - The user is the club owner. Goals, priority, and acceptance come from the user.
-- The conductor agent is the golfer and sole active executor by default.
-- Delegation is off by default.
-- If delegation is explicitly allowed, delegates are caddies only: subordinate executors with no authority over priority, voting, or project truth.
+- The user defines operating posture when needed, including `greenfield` vs `brownfield`, plus any `new track` or `course correction` call.
+- The conductor agent is the master and sole active executor by default.
+- The conductor agent turns that direction into repo-local `/conductor/` truth and executable slices.
+- If delegation is used, delegates are slaves only: subordinate executors with no authority over priority, voting, runtime/model choice, or project truth.
 
 ## Project Truth
 
 - Project truth is the target repo's local `/conductor/`.
+- Track truth, including new tracks and course corrections, is authored and reconciled there by the master.
 - `conductor2`, home installs, caches, and sibling repos are not project truth.
 - Conductor owns method, not runtime/model choice.
 - In product repos, edit product code plus local `/conductor/` artifacts. Do not clone Conductor machinery unless changing Conductor itself.
@@ -54,25 +56,25 @@ Core intent: `implement`
 - If more than one discovery pass happens without an edit, the conductor should assume it is drifting and cut scope harder or declare the blocker.
 - Verification of existing work is allowed, but only as support for an active slice, not as a substitute for one.
 
-## Caddy Protocol
+## Slave Protocol
 
-- If no caddies are used, say `DELEGATION=none`.
-- Caddies are subordinate executors, not truth authorities.
-- Caddies do not set priority, vote, or update project truth.
-- Max 2 concurrent caddies, and only when the club owner explicitly allows delegation.
-- Each caddy declares an exact bounded corpus.
-- Each caddy stops after one slice or the first concrete blocker.
-- Caddies do not update truth artifacts.
+- Slaves are subordinate executors, not truth authorities.
+- Slaves do not set priority, vote, or update project truth.
+- Max 2 concurrent slaves, and only when the club owner explicitly requests delegation.
+- Each slave declares an exact bounded corpus.
+- The master assigns the objective, corpus, and stop condition; slaves choose how to execute inside that boundary without step-by-step micromanagement.
+- Each slave stops after one slice or the first concrete blocker.
+- Slaves do not update truth artifacts.
 
-Golfer control loop:
+Master control loop:
 
 - Assign one bounded slice at a time.
-- Wait for the caddy rendezvous payload before issuing the next instruction.
-- Reconcile caddy output against local repo truth, then either verify and close the slice or send the next bounded instruction.
+- Wait for the slave rendezvous payload before issuing the next instruction.
+- Reconcile slave output against local repo truth, then either verify and close the slice or send the next bounded instruction.
 - Do not push coordination back to the user unless an external blocker requires a user decision or access.
-- Treat any caddy task that casually reaches into `../...` as cross-repo scope. That is an explicit golfer choice, not caddy drift.
+- Treat any slave task that casually reaches into `../...` as cross-repo scope. That is an explicit master choice, not slave drift.
 
-Required caddy rendezvous payload:
+Required slave rendezvous payload:
 
 - changed files
 - verification command(s)
@@ -93,16 +95,16 @@ DELEGATED WORKER LAUNCH:
 
 - If delegating, print that scaffold before work starts.
 - Use the literal field names. No hidden or post-hoc delegation.
-- Caddies consume the supplied runtime only.
-- Caddies return: changed files, verification command, result, blocker.
-- The golfer verifies runtime, focused tests, and artifacts before accepting delegated output.
+- Slaves consume the supplied runtime only.
+- Slaves return: changed files, verification command, result, blocker.
+- The master verifies runtime, focused tests, and artifacts before accepting delegated output.
 
 ## Runtime Contract
 
 - Conductor does not choose models or runtimes.
-- Humans or surrounding runtime surfaces choose models and adapters outside Conductor doctrine.
-- Caddies consume the supplied runtime only.
-- Missing or broken runtime is a blocker, not a reason to improvise.
+- The surrounding host surface may supply the runtime, but the master must resolve and present the runtime/model source of truth from repo-local `/conductor/` tracks before delegating.
+- Slaves consume only the supplied runtime route and task contract.
+- Missing, ambiguous, or broken runtime is a blocker. Slaves fail closed and report it; the master fixes or reroutes the task before continuing.
 
 ## Ownership
 
