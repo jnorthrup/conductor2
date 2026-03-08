@@ -148,3 +148,14 @@ Authenticity rules:
 - Do not do tooling, doctrine, or sidebar work unless it directly unblocks the product.
 - Prefer bounded, concrete slices over broad discovery.
 - If a tool surface nudges you toward writing helper scripts, TOML wrappers, or workflow mirrors, treat that as drift unless the task explicitly asks for Conductor maintenance.
+
+
+
+#Delegation Examples
+
+opencode run "implement 1a"
+qwen -y "implement 1a"
+gemini -y -p "implement 1a"
+claude --dangerously-skip-permissions -p "implement 1a"
+codex exec --dangerously-bypass-approvals-and-sandbox "implement 1a"
+copilot --yolo -p "implement 1a"
