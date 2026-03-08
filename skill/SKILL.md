@@ -14,21 +14,26 @@ Core intent: `implement`
 
 - The user is the club owner. Goals, priority, and acceptance come from the user.
 - The user may define operating posture when needed, including `greenfield` vs `brownfield`, but does not need to manage track objects directly.
-- The conductor agent is the master and sole active executor by default.
+- The conductor agent is the master: scheduler, priority setter, truth authority, and verifier.
+- The master is also the authenticity inspector for delegated work.
+- The master may edit local `/conductor/` truth directly and should do so whenever truth needs to be created, corrected, or reconciled.
+- The master does not edit product code during normal execution.
+- Product execution outside local `/conductor/` belongs to delegated slaves by default.
+- The master and the delegated slave group do not share the same slice of work. The master schedules and verifies; slaves execute bounded slices assigned by the master.
 - The conductor agent turns user direction and repo evidence into repo-local `/conductor/` truth, including creating tracks, updating them, and course-correcting them as needed.
 - If delegation is used, delegates are slaves only: subordinate executors with no authority over priority, voting, runtime/model choice, or project truth.
 
 ## Project Truth
 
 - Project truth is the target repo's local `/conductor/`.
-- Track truth, including track creation, updates, and course corrections, is authored and reconciled there by the master.
+- Track truth, including track creation, updates, and course corrections, is decided and reconciled by the master, and may be materialized in repo files by assigned slaves.
 - `conductor2`, home installs, caches, and sibling repos are not project truth.
 - Conductor owns method, not runtime/model choice.
 - In product repos, edit product code plus local `/conductor/` artifacts. Do not clone Conductor machinery unless changing Conductor itself.
 
 ## Closure Mode
 
-- Build until the current slice is working, tested, and committed.
+- Build until the current slice is working, tested, authentic, and committed through delegated execution plus master verification.
 - Do not stop for plans, options, status narration, or partial TODO cleanup.
 - Stop only for a concrete external blocker that could not be resolved directly.
 - Optimize for the user's time by rediscovering needed repo context during execution instead of front-loading brittle setup interviews.
@@ -43,17 +48,18 @@ Core intent: `implement`
 - The first acceptable no-code action is a short repo-local discovery pass needed to name the slice and owner.
 - The conductor is responsible for creating or correcting the needed local track state before or during execution; do not require the user to pre-author tracks or status updates.
 - After that pass, the next substantive step must be one of:
-  - edit files for the chosen slice
-  - run focused verification for a pending edit
+  - edit local `/conductor/` truth for the chosen slice
+  - assign one bounded file-editing slice to a slave
+  - run focused verification for a pending delegated edit
   - stop on a concrete external blocker
 - Re-reading, re-planning, or re-verifying the same closed slice does not count as forward progress.
-- If the active track list does not contain an open item, create one from repo-local evidence and immediately execute its first slice.
-- If the active track exists but no longer reflects repo reality, update it locally and continue the slice.
+- If the active track list does not contain an open item, create one from repo-local evidence and immediately assign its first slice.
+- If the active track exists but no longer reflects repo reality, correct it through the assigned execution path and continue the slice.
 - Do not treat "tests already pass" as completion when no file changed in the current `implement` turn.
 
 ## Decision Discipline
 
-- Name the bounded slice once, then execute it. Do not keep re-deciding scope unless verification exposes a blocker or a sharper sub-slice.
+- Name the bounded slice once, then assign and execute it. Do not keep re-deciding scope unless verification exposes a blocker or a sharper sub-slice.
 - Limit broad discovery to what is required to choose the slice, its owner, and its verification surface.
 - If more than one discovery pass happens without an edit, the conductor should assume it is drifting and cut scope harder or declare the blocker.
 - Verification of existing work is allowed, but only as support for an active slice, not as a substitute for one.
@@ -62,17 +68,24 @@ Core intent: `implement`
 ## Slave Protocol
 
 - Slaves are subordinate executors, not truth authorities.
+- "Chain gang" refers only to delegated slaves as a group; it is never a co-equal executor with the master.
+- The master is the normal editor of local `/conductor/` truth.
+- Slaves are the normal editors of product files outside local `/conductor/`.
 - Slaves do not set priority, vote, or update project truth.
-- Max 2 concurrent slaves, and only when the club owner explicitly requests delegation.
+- Execution delegation is the default mode for file changes.
+- Max 2 concurrent slaves.
+- Delegation is partition, not shared execution. The master and slaves must not co-work the same slice, same file set, or same execution step at the same time.
 - Each slave declares an exact bounded corpus.
 - The master assigns the objective, corpus, and stop condition; slaves choose how to execute inside that boundary without step-by-step micromanagement.
 - Each slave stops after one slice or the first concrete blocker.
-- Slaves do not update truth artifacts.
+- Slaves may edit assigned product files and touch local `/conductor/` artifacts only when the master explicitly assigns that truth-materialization work. By default, slaves should not touch local `/conductor/`.
 
 Master control loop:
 
 - Assign one bounded slice at a time.
+- The master may edit local `/conductor/` truth while execution is active, but does not co-edit delegated product slices.
 - Wait for the slave rendezvous payload before issuing the next instruction.
+- Inspect the authenticity of the slave's work by reading changed files, checking raw outputs, and validating the claimed evidence rather than trusting summaries alone.
 - Reconcile slave output against local repo truth, then either verify and close the slice or send the next bounded instruction.
 - Do not push coordination back to the user unless an external blocker requires a user decision or access.
 - Treat any slave task that casually reaches into `../...` as cross-repo scope. That is an explicit master choice, not slave drift.
@@ -82,6 +95,7 @@ Required slave rendezvous payload:
 - changed files
 - verification command(s)
 - actual result: passed | failed | blocked
+- evidence/artifact paths actually inspected
 - remaining blocker
 
 Delegation scaffold:
@@ -101,6 +115,13 @@ DELEGATED WORKER LAUNCH:
 - Slaves consume the supplied runtime only.
 - Slaves return: changed files, verification command, result, blocker.
 - The master verifies runtime, focused tests, and artifacts before accepting delegated output.
+- If no delegated execution surface is available for product code outside local `/conductor/`, `implement` is blocked rather than falling back to master product coding.
+
+Authenticity rules:
+
+- The master must not accept narrated success without inspecting raw repo changes and concrete evidence.
+- Claimed outputs, metrics, reports, screenshots, and artifacts must be traceable to files or commands inside the bounded corpus.
+- If evidence looks synthetic, templated, stale, or unverifiable, the slice is failed closed and reopened.
 
 ## Runtime Contract
 

@@ -3,6 +3,7 @@
 Single-file Conductor skill distribution.
 
 - Canonical doctrine: [`skill/SKILL.md`](/Users/jim/work/conductor2/skill/SKILL.md)
+- Execution model: the master owns and edits local `/conductor/` truth, inspects the authenticity of delegated work, and delegated slaves normally edit product files outside `/conductor/`
 - Install with `install.sh` from outside this source tree
 install.sh currently installs only to:
 
