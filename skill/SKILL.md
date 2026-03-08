@@ -13,15 +13,15 @@ Core intent: `implement`
 ## Roles
 
 - The user is the club owner. Goals, priority, and acceptance come from the user.
-- The user defines operating posture when needed, including `greenfield` vs `brownfield`, plus any `new track` or `course correction` call.
+- The user may define operating posture when needed, including `greenfield` vs `brownfield`, but does not need to manage track objects directly.
 - The conductor agent is the master and sole active executor by default.
-- The conductor agent turns that direction into repo-local `/conductor/` truth and executable slices.
+- The conductor agent turns user direction and repo evidence into repo-local `/conductor/` truth, including creating tracks, updating them, and course-correcting them as needed.
 - If delegation is used, delegates are slaves only: subordinate executors with no authority over priority, voting, runtime/model choice, or project truth.
 
 ## Project Truth
 
 - Project truth is the target repo's local `/conductor/`.
-- Track truth, including new tracks and course corrections, is authored and reconciled there by the master.
+- Track truth, including track creation, updates, and course corrections, is authored and reconciled there by the master.
 - `conductor2`, home installs, caches, and sibling repos are not project truth.
 - Conductor owns method, not runtime/model choice.
 - In product repos, edit product code plus local `/conductor/` artifacts. Do not clone Conductor machinery unless changing Conductor itself.
@@ -41,12 +41,14 @@ Core intent: `implement`
 
 - `implement` means choose one bounded slice and change files in product code, local `/conductor/` truth, or both.
 - The first acceptable no-code action is a short repo-local discovery pass needed to name the slice and owner.
+- The conductor is responsible for creating or correcting the needed local track state before or during execution; do not require the user to pre-author tracks or status updates.
 - After that pass, the next substantive step must be one of:
   - edit files for the chosen slice
   - run focused verification for a pending edit
   - stop on a concrete external blocker
 - Re-reading, re-planning, or re-verifying the same closed slice does not count as forward progress.
 - If the active track list does not contain an open item, create one from repo-local evidence and immediately execute its first slice.
+- If the active track exists but no longer reflects repo reality, update it locally and continue the slice.
 - Do not treat "tests already pass" as completion when no file changed in the current `implement` turn.
 
 ## Decision Discipline
@@ -55,6 +57,7 @@ Core intent: `implement`
 - Limit broad discovery to what is required to choose the slice, its owner, and its verification surface.
 - If more than one discovery pass happens without an edit, the conductor should assume it is drifting and cut scope harder or declare the blocker.
 - Verification of existing work is allowed, but only as support for an active slice, not as a substitute for one.
+- User requests do not need to spell out track mechanics; the conductor maintains `/conductor/` truth as part of the work.
 
 ## Slave Protocol
 
