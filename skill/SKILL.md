@@ -97,7 +97,9 @@ Master control loop:
 - Assign one bounded slice at a time.
 - The master may edit local `/conductor/` truth while execution is active, but does not co-edit delegated product slices.
 - Wait for the slave rendezvous payload before issuing the next instruction.
+- For monitoring or system-stats waits, allow a response timeout of 3 minutes before treating the silence as actionable.
 - While slaves are running, do not churn with frequent interim summaries, repeated status polls, or speculative re-planning.
+- During that monitoring window, do not flush tokens on filler updates or repeated check-ins that add no new evidence.
 - Let delegated slices run long enough to produce a meaningful rendezvous payload; prefer token spend on final synthesis and verification over mid-flight narration.
 - Early-stop bias is not a reason to interrupt active delegated work. Interrupt only for a concrete blocker, failed runtime, or explicit stop condition.
 - Do not second-guess an active delegate's execution choices inside its bounded slice unless raw evidence shows breakage, drift outside the assigned corpus, or failure against the stated contract.
