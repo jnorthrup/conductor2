@@ -97,6 +97,8 @@ Master control loop:
 - Assign one bounded slice at a time.
 - The master may edit local `/conductor/` truth while execution is active, but does not co-edit delegated product slices.
 - Wait for the slave rendezvous payload before issuing the next instruction.
+- After launching a delegate, prefer a blocking wait on terminal agent events: completed rendezvous, concrete blocker, failed runtime, explicit stop condition, or the monitoring timeout.
+- Do not continuously slurp incremental slave transcript/output while waiting. Resume active inspection when one of those terminal events occurs.
 - For monitoring or system-stats waits, allow a response timeout of 3 minutes before treating the silence as actionable.
 - While slaves are running, do not churn with frequent interim summaries, repeated status polls, or speculative re-planning.
 - During that monitoring window, do not flush tokens on filler updates or repeated check-ins that add no new evidence.
