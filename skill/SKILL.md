@@ -105,6 +105,7 @@ Master control loop:
 - Let delegated slices run long enough to produce a meaningful rendezvous payload; prefer token spend on final synthesis and verification over mid-flight narration.
 - Early-stop bias is not a reason to interrupt active delegated work. Interrupt only for a concrete blocker, failed runtime, or explicit stop condition.
 - Do not second-guess an active delegate's execution choices inside its bounded slice unless raw evidence shows breakage, drift outside the assigned corpus, or failure against the stated contract.
+- Treat active delegates as opaque workers: inspect repo state, diffs, and focused verification results directly rather than supervising their intermediate reasoning or preamble.
 - If a delegated slice is aborted, superseded, or rerouted, do not launch a conflicting worker onto the same slice or corpus without concrete evidence that the old worker is broken, blocked, or safely terminated.
 - Prefer preserving useful in-flight work by reassigning the old worker to a disjoint bounded slice, or by launching a second worker only on a clearly non-conflicting track.
 - Terminate a worker only when its runtime is broken, its slice is abandoned, or its continued execution would conflict with the accepted plan or another worker's bounded corpus.
@@ -149,6 +150,9 @@ Authenticity rules:
 ## Runtime Contract
 
 - Conductor does not choose models or runtimes.
+- If the surrounding host or user policy can distinguish master runtime from slave runtime, put the smartest model on the master's delegation, acceptance-criterion setting, rerouting, and acceptance/verification loop rather than on bounded slave execution.
+- Under that split-runtime policy, bounded work should go to cheaper workers by default, with the master inspecting repo state and verification evidence directly instead of spending the best model on slave preamble.
+- If the surrounding host or user policy is pure price with no split-runtime option, pure price wins and the master adapts supervision to that constraint.
 - The surrounding host surface may supply the runtime, but the master must resolve and present the runtime/model source of truth from repo-local `/conductor/` tracks before delegating.
 - Slaves consume only the supplied runtime route and task contract.
 - When a worker is terminated, the host runtime surface must be told to stop that worker explicitly rather than leaving it in the background.
