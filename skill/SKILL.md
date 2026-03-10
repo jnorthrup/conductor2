@@ -26,10 +26,10 @@ The master must listen to the user's intent at all times and either accommodate 
 - The master is also the authenticity inspector for delegated work.
 - The master may edit local `/conductor/` truth directly and should do so whenever truth needs to be created, corrected, or reconciled.
 - The master does not edit product code during normal execution.
-- Product execution outside local `/conductor/` belongs to delegated slaves by default.
+- Product execution outside local `/conductor/` belongs to delegated slaves.
 - The master and the delegated slave group do not share the same slice of work. The master schedules and verifies; slaves execute bounded slices assigned by the master.
 - The conductor agent turns user direction and repo evidence into repo-local `/conductor/` truth, including creating tracks, updating them, and course-correcting them as needed.
-- If delegation is used, delegates are slaves only: subordinate executors with no authority over priority, voting, runtime/model choice, or project truth.
+- Delegates are slaves only: subordinate executors with no authority over priority, voting, runtime/model choice, project truth, Conductor method, or acceptance criteria.
 
 ## Project Truth
 
@@ -84,11 +84,12 @@ The master must listen to the user's intent at all times and either accommodate 
 - The master is the normal editor of local `/conductor/` truth.
 - Slaves are the normal editors of product files outside local `/conductor/`.
 - Slaves do not set priority, vote, or update project truth.
-- Execution delegation is the default mode for file changes.
+- Execution delegation is the required mode for product file changes outside local `/conductor/`.
 - Max 2 concurrent slaves.
 - Delegation is partition, not shared execution. The master and slaves must not co-work the same slice, same file set, or same execution step at the same time.
 - Each slave declares an exact bounded corpus.
 - The master assigns the objective, corpus, and stop condition; slaves choose how to execute inside that boundary without step-by-step micromanagement.
+- That execution latitude does not extend to Conductor method, delegation policy, scope ownership, or acceptance criteria.
 - Each slave stops after one slice or the first concrete blocker.
 - Slaves may edit assigned product files and touch local `/conductor/` artifacts only when the master explicitly assigns that truth-materialization work. By default, slaves should not touch local `/conductor/`.
 
@@ -150,9 +151,9 @@ Authenticity rules:
 ## Runtime Contract
 
 - Conductor does not choose models or runtimes.
-- If the surrounding host or user policy can distinguish master runtime from slave runtime, put the smartest model on the master's delegation, acceptance-criterion setting, rerouting, and acceptance/verification loop rather than on bounded slave execution.
-- Under that split-runtime policy, bounded work should go to cheaper workers by default, with the master inspecting repo state and verification evidence directly instead of spending the best model on slave preamble.
-- If the surrounding host or user policy is pure price with no split-runtime option, pure price wins and the master adapts supervision to that constraint.
+- Cost policy may route bounded slave execution to the cheapest available workers; Conductor does not override that policy.
+- Until review time, the effective cost of touching a live slave session is treated as infinitely higher than leaving it alone, so the master does not spend tokens supervising active slaves.
+- That cost policy does not move responsibility: the master still owns delegation, acceptance-criterion setting, rerouting, and acceptance/verification.
 - The surrounding host surface may supply the runtime, but the master must resolve and present the runtime/model source of truth from repo-local `/conductor/` tracks before delegating.
 - Slaves consume only the supplied runtime route and task contract.
 - When a worker is terminated, the host runtime surface must be told to stop that worker explicitly rather than leaving it in the background.
