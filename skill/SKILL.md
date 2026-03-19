@@ -88,6 +88,8 @@ The master must listen to the user's intent at all times and either accommodate 
   - Cells remain isolated until lockdown; no contamination back-flow
   - Lockdown task must be a fresh conductor session without cell memory
 
+
+
 ## Decision Discipline
 
 - Name the bounded slice once, then assign and execute it. Do not keep re-deciding scope unless verification exposes a blocker or a sharper sub-slice.
@@ -197,21 +199,15 @@ Authenticity rules:
 - Do not do tooling, doctrine, or sidebar work unless it directly unblocks the product.
 - Prefer bounded, concrete slices over broad discovery.
 - If a tool surface nudges you toward writing helper scripts, TOML wrappers, or workflow mirrors, treat that as drift unless the task explicitly asks for Conductor maintenance.
-
-
-
+ 
 #Delegation Examples
 
 # Implement examples
 opencode run "implement 1a"
-qwen -y "implement 1a"
+qwen -y -p "implement 1a"
 gemini -y -p "implement 1a"
 claude --dangerously-skip-permissions -p "implement 1a"
 codex exec --dangerously-bypass-approvals-and-sandbox "implement 1a"
 copilot --yolo -p "implement 1a"
 
-# Unbias examples
-opencode run "unbias build a compiler"
-qwen -y "unbias create a parser"
-gemini -y -p "unbias implement threading"
-claude --dangerously-skip-permissions -p "unbias design database"
+'conductor implement' is the only delegation rol 
