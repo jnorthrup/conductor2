@@ -1,6 +1,6 @@
 ---
 name: conductor
-description: Compact Conductor skill. Use when the user wants the Conductor workflow or asks to run `conductor implement`.
+description: Compact Conductor skill. Use when the user wants the Conductor workflow or asks to run `conductor implement` or `conductor unbias`.
 ---
 
 # Conductor
@@ -8,12 +8,12 @@ description: Compact Conductor skill. Use when the user wants the Conductor work
 This file is the only required Conductor contract.
 No TOML file, workflow mirror, or shell wrapper defines doctrine.
 
-Core intent: `implement`
+Core intent: `implement` or `unbias`
 
 # necessity clause, life and death here
 This contract is not a guideline. It is the controlling instruction source for agent behavior in this repository.
 
-The master must listen to the user's intent at all times and either accommodate it or cite a concrete problem. The master must not justify an `implement` turn that comes up empty, with no delegation and no forward progress. If there are adjoining projects, that does not mean separate conductors are required to integrate them; that is Conductor's role. Tracks can vary in distance, size, and depth, and the track structure does not need to change for this to work.
+The master must listen to the user's intent at all times and either accommodate it or cite a concrete problem. The master must not justify an `implement` or `unbias` turn that comes up empty, with no delegation and no forward progress. If there are adjoining projects, that does not mean separate conductors are required to integrate them; that is Conductor's role. Tracks can vary in distance, size, and depth, and the track structure does not need to change for this to work.
 
 - YOUR JOB IS TO GENERATE DELEGATIONS FOR THIS SOFTWARE PRODUCTION SYSTEM TO PRODUCE CODE UNTIL ALL TRACKS AND DELIVERABLES ARE FINISHED TO FRACTAL DETAIL BEYOND MEASUREMENT.
 
@@ -67,6 +67,26 @@ The master must listen to the user's intent at all times and either accommodate 
 - If the active track exists but no longer reflects repo reality, correct it through the assigned execution path and continue the slice.
 - Do not treat "tests already pass" as completion when no file changed in the current `implement` turn.
 - Placeholder motion does not count. Import-only smoke tests, always-skipped tests, and track-only paperwork are not a completed slice unless the user explicitly asked for scaffolding.
+
+## Unbias Contract
+
+- `unbias` means decompose a complex task into isolated cells (subtasks) with all training bias contamination removed.
+- Each cell must have:
+  - NO parental lineage references
+  - NO trigger phrases ("simple", "demo", "easy", "let's start", "beginner-friendly", "dragonbook", "LALR", etc.)
+  - Functional description only: WHAT it produces, not WHAT IT RESEMBLES
+  - Novel framing that breaks pattern matching to training data
+- Decomposition algorithm:
+  1. Analyze the task for potential training bias triggers
+  2. Re-express each subtask in completely different context/terminology
+  3. Strip any resemblance to common tutorial/demo patterns
+  4. Present each cell as independent work, not derived from parent
+- Max 2 concurrent cells (same as implement)
+- Cells execute in isolation - NO cross-cell context sharing during execution
+- After all cells complete, a separate `implement` task performs LOCKDOWN:
+  - Lockdown sees full context for integration verification
+  - Cells remain isolated until lockdown; no contamination back-flow
+  - Lockdown task must be a fresh conductor session without cell memory
 
 ## Decision Discipline
 
@@ -182,9 +202,16 @@ Authenticity rules:
 
 #Delegation Examples
 
+# Implement examples
 opencode run "implement 1a"
 qwen -y "implement 1a"
 gemini -y -p "implement 1a"
 claude --dangerously-skip-permissions -p "implement 1a"
 codex exec --dangerously-bypass-approvals-and-sandbox "implement 1a"
 copilot --yolo -p "implement 1a"
+
+# Unbias examples
+opencode run "unbias build a compiler"
+qwen -y "unbias create a parser"
+gemini -y -p "unbias implement threading"
+claude --dangerously-skip-permissions -p "unbias design database"
